@@ -1,270 +1,61 @@
-# import tkinter as tk
-# import numpy as np
-
-# def wczytaj_macierz():
-#     rozmiar_label.config(text="Podaj rozmiar macierzy:")
-#     n_entry.config(state=tk.NORMAL)
-#     m_entry.config(state=tk.NORMAL)
-#     wprowadz_button.config(state=tk.NORMAL)
-
-# def wprowadz_dane():
-#     n = int(n_entry.get())
-#     m = int(m_entry.get())
-#     macierz_label.config(text="Wprowadź macierz:")
-#     macierz_entry = []
-#     for i in range(n):
-#         row = []
-#         for j in range(m):
-#             entry = tk.Entry(root, width=10)
-#             entry.grid(row=i+4, column=j)
-#             row.append(entry)
-#         macierz_entry.append(row)
-    
-#     oblicz_button = tk.Button(root, text="Oblicz macierz odwrotną", command=lambda: oblicz_odwrotna(macierz_entry))
-#     oblicz_button.grid(row=n+4, column=0, columnspan=m)
-    
-# def oblicz_odwrotna(macierz_entry):
-#     macierz = []
-#     for row in macierz_entry:
-#         row_vals = []
-#         for entry in row:
-#             row_vals.append(int(entry.get()))
-#         macierz.append(row_vals)
-    
-#     try:
-#         odwrotna = np.linalg.inv(macierz)
-#         wynik_label.config(text="Macierz odwrotna:")
-#         wynik_entry = []
-#         for i in range(len(odwrotna)):
-#             row = []
-#             for j in range(len(odwrotna[0])):
-#                 entry = tk.Entry(root, width=10)
-#                 entry.insert(tk.END, str(odwrotna[i][j]))
-#                 entry.config(state=tk.DISABLED)
-#                 entry.grid(row=i+7, column=j)
-#                 row.append(entry)
-#             wynik_entry.append(row)
-#     except np.linalg.LinAlgError:
-#         wynik_label.config(text="Macierz nie jest odwracalna.")
-
-# root = tk.Tk()
-
-# wczytaj_button = tk.Button(root, text="Wczytaj macierz", command=wczytaj_macierz)
-# wczytaj_button.grid(row=0, column=0)
-
-# rozmiar_label = tk.Label(root, text="")
-# rozmiar_label.grid(row=1, column=0)
-
-# n_entry = tk.Entry(root, width=10, state=tk.DISABLED)
-# n_entry.grid(row=2, column=0)
-
-# m_entry = tk.Entry(root, width=10, state=tk.DISABLED)
-# m_entry.grid(row=2, column=1)
-
-# wprowadz_button = tk.Button(root, text="Wprowadź dane", command=wprowadz_dane, state=tk.DISABLED)
-# wprowadz_button.grid(row=3, column=0)
-
-# macierz_label = tk.Label(root, text="")
-# macierz_label.grid(row=4, column=0)
-
-# wynik_label = tk.Label(root, text="")
-# wynik_label.grid(row=6, column=0)
-
-# root.mainloop()
-
-
-
-
-
-
-
-# import tkinter as tk
-# import numpy as np
-
-# def wczytaj_macierz():
-#     rozmiar_label.config(text="Podaj rozmiar macierzy:")
-#     n_entry.config(state=tk.NORMAL)
-#     m_entry.config(state=tk.NORMAL)
-#     wprowadz_button.config(state=tk.NORMAL)
-
-# def wprowadz_dane():
-#     n = int(n_entry.get())
-#     m = int(m_entry.get())
-#     macierz_label.config(text="Wprowadź macierz:")
-#     macierz_entry = []
-#     for i in range(n):
-#         row = []
-#         for j in range(m):
-#             entry = tk.Entry(root, width=10)
-#             entry.grid(row=i+4, column=j)
-#             row.append(entry)
-#         macierz_entry.append(row)
-    
-#     oblicz_button = tk.Button(root, text="Oblicz macierz odwrotną", command=lambda: oblicz_odwrotna(macierz_entry, n, m))
-#     oblicz_button.grid(row=n+4, column=0, columnspan=m)
-    
-# def oblicz_odwrotna(macierz_entry, n, m):
-#     macierz = []
-#     for row in macierz_entry:
-#         row_vals = []
-#         for entry in row:
-#             row_vals.append(int(entry.get()))
-#         macierz.append(row_vals)
-    
-#     try:
-#         odwrotna = np.linalg.inv(macierz)
-#         wynik_label.config(text="Macierz odwrotna:")
-#         wynik_entry = []
-#         for i in range(len(odwrotna)):
-#             row = []
-#             for j in range(len(odwrotna[0])):
-#                 entry = tk.Entry(root, width=10)
-#                 entry.insert(tk.END, str(odwrotna[i][j]))
-#                 entry.config(state=tk.DISABLED)
-#                 entry.grid(row=i+7, column=j)
-#                 row.append(entry)
-#             wynik_entry.append(row)
-        
-#         # Usunięcie pól tekstowych zawierających wynik
-#         for row in wynik_entry:
-#             for entry in row:
-#                 entry.destroy()
-        
-#         # Przywrócenie stanu początkowego programu
-#         rozmiar_label.config(text="")
-#         n_entry.delete(0, tk.END)
-#         n_entry.config(state=tk.DISABLED)
-#         m_entry.delete(0, tk.END)
-#         m_entry.config(state=tk.DISABLED)
-#         wprowadz_button.config(state=tk.DISABLED)
-#         macierz_label.config(text="")
-#     except np.linalg.LinAlgError:
-#         wynik_label.config(text="Macierz nie jest odwracalna.")
-
-# root = tk.Tk()
-
-# wczytaj_button = tk.Button(root, text="Wczytaj macierz", command=wczytaj_macierz)
-# wczytaj_button.grid(row=0, column=0)
-
-# rozmiar_label = tk.Label(root, text="")
-# rozmiar_label.grid(row=1, column=0)
-
-# n_entry = tk.Entry(root, width=10, state=tk.DISABLED)
-# n_entry.grid(row=2, column=0)
-
-# m_entry = tk.Entry(root, width=10, state=tk.DISABLED)
-# m_entry.grid(row=2, column=1)
-
-# wprowadz_button = tk.Button(root, text="Wprowadź dane", command=wprowadz_dane, state=tk.DISABLED)
-# wprowadz_button.grid(row=3, column=0)
-
-# macierz_label = tk.Label(root, text="")
-# macierz_label.grid(row=4, column=0)
-
-# wynik_label = tk.Label(root, text="")
-# wynik_label.grid(row=6, column=0)
-
-# root.mainloop()
-
-
-
-
-
-
-import tkinter as tk
+from typing import Any
 import numpy as np
+import pandas as pd
+from colorama import Fore, Style
 
-def wczytaj_macierz():
-    rozmiar_label.config(text="Podaj rozmiar macierzy:")
-    n_entry.config(state=tk.NORMAL)
-    m_entry.config(state=tk.NORMAL)
-    wprowadz_button.config(state=tk.NORMAL)
+from obiekt_matematyczny import ObiektMatematyczny 
 
-def wprowadz_dane():
-    n = int(n_entry.get())
-    m = int(m_entry.get())
-    macierz_label.config(text="Wprowadź macierz:")
-    macierz_entry = []
-    for i in range(n):
-        row = []
-        for j in range(m):
-            entry = tk.Entry(root, width=10)
-            entry.grid(row=i+4, column=j)
-            entry.bind('<Return>', lambda event, row=i, column=j: wprowadz_wartosc(event, row, column, macierz_entry))
-            row.append(entry)
-        macierz_entry.append(row)
-    
-    oblicz_button = tk.Button(root, text="Oblicz macierz odwrotną", command=lambda: oblicz_odwrotna(macierz_entry))
-    oblicz_button.grid(row=n+4, column=0, columnspan=m)
-    
-def wprowadz_wartosc(event, row, column, macierz_entry):
-    if row < len(macierz_entry) and column < len(macierz_entry[0]):
-        current_entry = macierz_entry[row][column]
-        next_row = row + (column + 1) // len(macierz_entry[0])
-        next_column = (column + 1) % len(macierz_entry[0])
-        if current_entry.get().strip() != '':
-            macierz_entry[row][column].delete(0, tk.END)
-            macierz_entry[next_row][next_column].focus_set()
-    
-def oblicz_odwrotna(macierz_entry):
-    macierz = []
-    for row in macierz_entry:
-        row_vals = []
-        for entry in row:
-            row_vals.append(int(entry.get()))
-        macierz.append(row_vals)
-    
-    try:
-        odwrotna = np.linalg.inv(macierz)
-        wynik_label.config(text="Macierz odwrotna:")
-        wynik_entry = []
-        for i in range(len(odwrotna)):
-            row = []
-            for j in range(len(odwrotna[0])):
-                entry = tk.Entry(root, width=10)
-                entry.insert(tk.END, str(odwrotna[i][j]))
-                entry.config(state=tk.DISABLED)
-                entry.grid(row=i+7, column=j)
-                row.append(entry)
-            wynik_entry.append(row)
+
+class Macierz(ObiektMatematyczny):
+    def __init__(self, m, n, tab=[]):
+        self.m = m
+        self.n = n
         
-        # Usunięcie pól tekstowych zawierających wynik
-        for row in wynik_entry:
-            for entry in row:
-                entry.destroy()
+        if tab == []:
+            tab = np.zeros((m, n))
+        self.macierz = np.reshape(tab, (m, n))
+
+    def __getitem__(self, indices):
+        i, j = indices
+        return self.macierz[i-1, j-1]
+
+    def __setitem__(self, indices, value):
+        i, j = indices
+        self.macierz[i-1, j-1] = value
         
-        # Przywrócenie stanu początkowego programu
-        rozmiar_label.config(text="")
-        n_entry.delete(0, tk.END)
-        n_entry.config(state=tk.DISABLED)
-        m_entry.delete(0, tk.END)
-        m_entry.config(state=tk.DISABLED)
-        wprowadz_button.config(state=tk.DISABLED)
-        macierz_label.config(text="")
-    except np.linalg.LinAlgError:
-        wynik_label.config(text="Macierz nie jest odwracalna.")
 
-root = tk.Tk()
+        
+    def print(self, row=-1, col=-1, color=Fore.GREEN, color2=Fore.CYAN):
+        # matrix_obj = np.matrix(self.macierz)
+        # print(matrix_obj)
+        arr = self.macierz
+        # Znalezienie maksymalnej długości liczby dziesiętnej w macierzy
+        max_width = np.vectorize(lambda x: len(str(x)))(arr).max()
+        n_len = len(str(self.n))
+        m_len = len(str(self.m))
+        # Wypisanie indeksów kolumn
+        print(" " * (3 + n_len), end="")
+        for j in range(arr.shape[1]):
+            print(f"{color2}{j+1}:{Style.RESET_ALL}", end=" " * (max_width - len(str(j))))
+        print()
 
-wczytaj_button = tk.Button(root, text="Wczytaj macierz", command=wczytaj_macierz)
-wczytaj_button.grid(row=0, column=0)
+        # Wypisanie macierzy z wyróżnioną komórką
+        for i in range(arr.shape[0]):
+            # Wypisanie indeksu wiersza
+            print(f"{color2}{i+1}:{Style.RESET_ALL}", end=" ")
+            print(" " * (m_len - (len(str(i+1)))), end="")
+            for j in range(arr.shape[1]):
+                if i == row and j == col:
+                    print(f"{color}{str(arr[i, j]).ljust(max_width)}{Style.RESET_ALL}", end=" ")
+                else:
+                    print(str(arr[i, j]).ljust(max_width), end=" ")
+            print()
 
-rozmiar_label = tk.Label(root, text="")
-rozmiar_label.grid(row=1, column=0)
 
-n_entry = tk.Entry(root, width=10, state=tk.DISABLED)
-n_entry.grid(row=2, column=0)
 
-m_entry = tk.Entry(root, width=10, state=tk.DISABLED)
-m_entry.grid(row=2, column=1)
 
-wprowadz_button = tk.Button(root, text="Wprowadź dane", command=wprowadz_dane, state=tk.DISABLED)
-wprowadz_button.grid(row=3, column=0)
 
-macierz_label = tk.Label(root, text="")
-macierz_label.grid(row=4, column=0)
+m1 = Macierz(15, 5)
+m1[2, 3] = 10000
+m1.print(2, 5)
 
-wynik_label = tk.Label(root, text="")
-wynik_label.grid(row=6, column=0)
-
-root.mainloop()
