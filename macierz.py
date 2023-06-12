@@ -7,13 +7,14 @@ from obiekt_matematyczny import ObiektMatematyczny
 
 
 class Macierz(ObiektMatematyczny):
-    def __init__(self, m, n, tab=[]):
+    def __init__(self, m, n, nazwa = "", tab=[]):
         self.m = m
         self.n = n
-        
+        self.set_name(nazwa)
         if tab == []:
             tab = np.zeros((m, n))
         self.macierz = np.reshape(tab, (m, n))
+        
 
     def __getitem__(self, indices):
         i, j = indices
