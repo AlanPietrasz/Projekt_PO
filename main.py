@@ -1,4 +1,4 @@
 from menu import Menu
 
-
-Menu.run()
+menu = Menu()
+menu.run()

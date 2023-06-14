@@ -15,6 +15,8 @@ class Macierz(ObiektMatematyczny):
             tab = np.zeros((m, n))
         self.macierz = np.reshape(tab, (m, n))
         
+    def get_value(self):
+        return self.macierz    
 
     def __getitem__(self, indices):
         i, j = indices
@@ -24,7 +26,8 @@ class Macierz(ObiektMatematyczny):
         i, j = indices
         self.macierz[i-1, j-1] = value
         
-
+    def __repr__(self) -> str:
+        return str(self.macierz)
         
     def print(self, row=-1, col=-1, color=Fore.GREEN, color2=Fore.CYAN):
         # matrix_obj = np.matrix(self.macierz)
@@ -56,7 +59,9 @@ class Macierz(ObiektMatematyczny):
 
 
 
-m1 = Macierz(15, 5)
-m1[2, 3] = 10000
-m1.print(2, 5)
+# m1 = Macierz(15, 5)
+# m1[2, 3] = 10000
+# m1.print(2, 5)
 
+# mv = m1.get_value()
+# print(mv)
