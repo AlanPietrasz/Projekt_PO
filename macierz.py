@@ -49,7 +49,7 @@ class Macierz(ObiektMatematyczny):
             print(f"{color2}{i+1}:{Style.RESET_ALL}", end=" ")
             print(" " * (m_len - (len(str(i+1)))), end="")
             for j in range(arr.shape[1]):
-                if i == row and j == col:
+                if i == row - 1 and j == col - 1:
                     print(f"{color}{str(arr[i, j]).ljust(max_width)}{Style.RESET_ALL}", end=" ")
                 else:
                     print(str(arr[i, j]).ljust(max_width), end=" ")

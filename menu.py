@@ -1,4 +1,9 @@
 import os
+from aux import clear_terminal, get_char
+# from pynput import keyboard
+# from pynput.keyboard import Key
+
+
 
 from obiekt_matematyczny import ObiektMatematyczny
 from macierz import Macierz
@@ -100,6 +105,70 @@ class Menu:
                 print("Podano nieprawidłową wartość")
                 user_input = input()
                 Menu.clear_terminal()
+    
+
+
+
+
+    
+    def create_matrix(nazwa):
+        
+        Menu.clear_terminal()
+        while(True):
+            print("Podaj liczbę wierszy")
+            user_input = input()
+            if user_input.isdigit():
+                m = int(user_input)
+                break
+            else:
+                print("Podano nieprawidłową wartość")
+                user_input = input()
+                Menu.clear_terminal()
+        while(True):
+            print("Podaj liczbę kolumn")
+            user_input = input()
+            if user_input.isdigit():
+                n = int(user_input)
+                break
+            else:
+                print("Podano nieprawidłową wartość")
+                user_input = input()
+                Menu.clear_terminal()
+        macierz = Macierz(m, n, nazwa)
+        i = 1
+        j = 1
+        while True:
+            Menu.clear_terminal()
+            macierz.print(i, j)
+            print("Używaj wasd, aby poruszać się po macierzy")
+            print("Naciśnij ENTER jeśli chcesz wpisać wartość w wybrane pole")
+            print("Naciśnij q jeśli chcesz zakończyć wypełnianie pól macierzy")
+            user_input = get_char()
+            if user_input == "enter":
+                wartosc = Menu.create_number_val()
+                macierz[i, j] = wartosc
+            elif user_input == "w":
+                if i > 1:
+                    i -= 1
+            elif user_input == "a":
+                if j > 1:
+                    j -= 1
+            elif user_input == "s":
+                if i < n:
+                    i += 1
+            elif user_input == "d":
+                if j < m:
+                    j += 1
+            elif user_input == "q":
+                print("WYJSCIE")
+                break
+            else:
+                print("Podano nieprawidłową wartość")
+                print("Nie weszło")
+                user_input = input()
+            print("ZNAK:" + user_input + "||||")
+            
+
             
 
     def run(self):
@@ -108,6 +177,8 @@ class Menu:
         print(l1)
         print(repr(l1))
         print(str(l1))
+        nazwa = Menu.create_name()
+        wartosc = Menu.create_matrix(nazwa)
         user_input = input()
 
         while (True):
@@ -123,7 +194,7 @@ class Menu:
                             user_input = input()
                             if (user_input == "1"):
                                 nazwa = Menu.create_name()
-                                
+                                #wartosc = Menu.create_matrix(nazwa)
                                 pass
                             elif (user_input == "2"):
                                 pass
