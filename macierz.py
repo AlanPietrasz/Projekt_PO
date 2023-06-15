@@ -7,13 +7,21 @@ from obiekt_matematyczny import ObiektMatematyczny
 
 
 class Macierz(ObiektMatematyczny):
+    MAX_MATRIX_SIZE = 20
+    
     def __init__(self, m, n, nazwa = "", tab=[]):
         self.m = m
         self.n = n
-        self.set_name(nazwa)
+
         if tab == []:
             tab = np.zeros((m, n))
         self.macierz = np.reshape(tab, (m, n))
+        if nazwa == "":
+            self.has_a_name = False
+            self.set_name(repr(self.macierz))
+        else:
+            self.has_a_name = True
+            self.set_name(nazwa)
         
     def get_value(self):
         return self.macierz    
@@ -25,9 +33,14 @@ class Macierz(ObiektMatematyczny):
     def __setitem__(self, indices, value):
         i, j = indices
         self.macierz[i-1, j-1] = value
+        if not self.has_a_name:
+            self.set_name(repr(self.macierz))
         
-    def __repr__(self) -> str:
-        return str(self.macierz)
+    def __repr__(self):
+        return self.nazwa #[:self.n] + "..."
+    
+    def __str__(self):
+        return self.macierz.__str__()
         
     def print(self, row=-1, col=-1, color=Fore.GREEN, color2=Fore.CYAN):
         # matrix_obj = np.matrix(self.macierz)

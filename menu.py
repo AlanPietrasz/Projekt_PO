@@ -23,7 +23,7 @@ class Menu:
         self.historia_operacji = Historia()
 
     def display_menu():
-        Menu.clear_terminal()
+        clear_terminal()
         print("------------MENU-GŁÓWNE-----------------")
         print("1. Zarządzanie pamięcią")
         print("2. Dodawanie macierzy")
@@ -44,7 +44,7 @@ class Menu:
         # print("7. Zakończ")
 
     def display_memory_menu():
-        Menu.clear_terminal()
+        clear_terminal()
         print("------------MENU-PAMIĘCI---------------")
         print("1. Zapisane obiekty matematyczne")
         print("2. Zapisane operacje")
@@ -52,7 +52,7 @@ class Menu:
         print("Podaj liczbę:   ", end="")
     
     def display_object_memory_menu():
-        Menu.clear_terminal()
+        clear_terminal()
         print("------------HISTORIA-OBIEKTÓW---------------")
         print("1. Nowa macierz")
         print("2. Nowy wektor")
@@ -65,18 +65,15 @@ class Menu:
         print("9. Przeglądaj zapisane obiekty matematyczne")
         print("10. Menu Pamięci")
         print("Podaj liczbę:   ", end="")
-        
-    def clear_terminal():
-        os.system('cls' if os.name == 'nt' else 'clear')
 
     def invalid_input():
         print()
         print("Podano niepoprawne dane")
         user_input = input()
-        Menu.clear_terminal()
+        clear_terminal()
     
     def create_name():
-        Menu.clear_terminal()               
+        clear_terminal()               
         while(True):
             print("Podaj nazwę dla obiektu lub naciśnij ENTER jeśli nie chcesz go nazywać")
             user_input = input()
@@ -85,45 +82,44 @@ class Menu:
             if not ObiektMatematyczny.free_name(user_input):
                 print("Obiekt matematyczny o danej nazwie już istnieje")
                 user_input = input()
-                Menu.clear_terminal()
+                clear_terminal()
                 continue
             return user_input
             
     def create_number_val():
-        Menu.clear_terminal()               
+        clear_terminal()               
         while(True):
             print("Podaj wartość")
             user_input = input()
-            if user_input == "":
-                return ""
-            if user_input.isdigit():
-                return int(user_input)
             try:
-                user_input = float(user_input)
-                return float(user_input)
+                user_input = int(user_input)
+                return int(user_input)
             except:
-                print("Podano nieprawidłową wartość")
-                user_input = input()
-                Menu.clear_terminal()
-    
-
-
-
-
+                try:
+                    user_input = float(user_input)
+                    return float(user_input)
+                except:
+                    print("Podano nieprawidłową wartość")
+                    user_input = input()
+                    clear_terminal()
     
     def create_matrix(nazwa):
-        
-        Menu.clear_terminal()
+        clear_terminal()
         while(True):
             print("Podaj liczbę wierszy")
             user_input = input()
             if user_input.isdigit():
                 m = int(user_input)
-                break
+                if m < 1 or m > Macierz.MAX_MATRIX_SIZE:
+                    print("Podano nieprawidłową wartość")
+                    user_input = input()
+                    clear_terminal()
+                else:
+                    break
             else:
                 print("Podano nieprawidłową wartość")
                 user_input = input()
-                Menu.clear_terminal()
+                clear_terminal()
         while(True):
             print("Podaj liczbę kolumn")
             user_input = input()
@@ -133,12 +129,12 @@ class Menu:
             else:
                 print("Podano nieprawidłową wartość")
                 user_input = input()
-                Menu.clear_terminal()
+                clear_terminal()
         macierz = Macierz(m, n, nazwa)
         i = 1
         j = 1
         while True:
-            Menu.clear_terminal()
+            clear_terminal()
             macierz.print(i, j)
             print("Używaj wasd, aby poruszać się po macierzy")
             print("Naciśnij ENTER jeśli chcesz wpisać wartość w wybrane pole")
@@ -160,27 +156,16 @@ class Menu:
                 if j < m:
                     j += 1
             elif user_input == "q":
-                print("WYJSCIE")
                 break
             else:
                 print("Podano nieprawidłową wartość")
-                print("Nie weszło")
                 user_input = input()
-            print("ZNAK:" + user_input + "||||")
+        return macierz
             
 
             
 
     def run(self):
-        ObiektMatematyczny.print_all()
-        l1 = Liczba(5000)
-        print(l1)
-        print(repr(l1))
-        print(str(l1))
-        nazwa = Menu.create_name()
-        wartosc = Menu.create_matrix(nazwa)
-        user_input = input()
-
         while (True):
             Menu.display_menu()
             user_input = input()
@@ -194,8 +179,9 @@ class Menu:
                             user_input = input()
                             if (user_input == "1"):
                                 nazwa = Menu.create_name()
-                                #wartosc = Menu.create_matrix(nazwa)
-                                pass
+                                nowy_obiekt = Menu.create_matrix(nazwa)
+                                user_input = input()
+                                self.historia_obiektow[repr(nowy_obiekt)] = nowy_obiekt
                             elif (user_input == "2"):
                                 pass
                             elif (user_input == "3"):

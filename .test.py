@@ -95,3 +95,47 @@
 #     # Przerwij pętlę, jeśli naciśnięto klawisz "q"
 #     if pressed_key.lower() == 'q':
 #         break
+
+for i in range(-2, 2):
+    print(i,": ", end="")
+    print(str(i).isdigit())
+    
+print()
+    
+for i in range(-2, 2):
+    print(i,": ", end="")
+    print(str(i).isnumeric())
+
+for i in range(-2, 2):
+    print(i,": ", end="")
+    print(str(i).isdecimal())
+    
+for i in range(-2, 2):
+    print(i,": ", end="")
+    print(str(i).isalnum())
+    
+print()
+print()
+print() 
+    
+for i in range(-2, 2):
+    print(i,": ", end="")
+    print(str(i+0.5).isdigit())
+    
+print()
+    
+for i in range(-2, 2):
+    print(i,": ", end="")
+    print(str(i+0.5).isnumeric())
+
+for i in range(-2, 2):
+    print(i,": ", end="")
+    print(str(i+0.5).isdecimal())
+    
+for i in range(-2, 2):
+    print(i,": ", end="")
+    print(str(i+0.5).isalnum())
+    
+print(int("-10.3"))
+
+        
