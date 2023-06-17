@@ -16,18 +16,19 @@ class ObiektMatematyczny:
     #     return True
         
     def set_name(self, nazwa):
-        if not ObiektMatematyczny.free_name(nazwa):
+        if not ObiektMatematyczny.is_free_name(nazwa):
             raise ValueError("Obiekt matematyczny o danej nazwie już istnieje")
         self.nazwa = nazwa
-        self.zbior_nazw.add(nazwa)
+        ObiektMatematyczny.zbior_nazw.add(nazwa)
         
-    def free_name(nazwa):
+    def is_free_name(nazwa):
         if nazwa in ObiektMatematyczny.zbior_nazw:
             return False
         return True
         
     def __str__(self):
-        return self.nazwa
+        pass
+        #return self.nazwa
         
     def __repr__(self):
         return self.nazwa

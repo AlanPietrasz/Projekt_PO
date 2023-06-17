@@ -6,6 +6,8 @@ class Liczba(ObiektMatematyczny):
         self.set_name(str(wartosc))
         self.wartosc = wartosc
         
-    def __getitem__(self):
+    def get_value(self):
         return self.wartosc
     
+    def __str__(self):
+        return str(self.get_value())

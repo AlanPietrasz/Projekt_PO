@@ -136,6 +136,7 @@ for i in range(-2, 2):
     print(i,": ", end="")
     print(str(i+0.5).isalnum())
     
-print(int("-10.3"))
+#print(int("-10.3"))
 
         
+print(set(range(1, 10)))

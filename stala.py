@@ -11,19 +11,5 @@ class Stala(Liczba):
     def get_value(self):
         return self.slownik_wartosci[self.nazwa]
     
-    def get_name(self):
-        return super().get_name()
-    
-    def change_value(self, wartosc):
-        self.slownik_wartosci[self.nazwa] = wartosc
-    
-    # def __init__(self, wartosc, nazwa):
-    #     self.wartosc = wartosc
-    #     self.nazwa = nazwa
-        
-    # def get_value(self):
-    #     return super().get_value()
-    
-    # def get_name(self):
-    #     return super().get_name()
-
+    def __str__(self):
+        return str(self.get_value())

@@ -1,4 +1,4 @@
-import os
+
 from aux import clear_terminal, get_char
 # from pynput import keyboard
 # from pynput.keyboard import Key
@@ -21,6 +21,29 @@ class Menu:
     def __init__(self):
         self.historia_obiektow = Historia()
         self.historia_operacji = Historia()
+        self.historia_obiektow["id"] = Macierz(3, 3, "id", [[1, 0, 0],
+                                                            [0, 1, 0],
+                                                            [0, 0, 1]])
+        self.historia_obiektow["exm1"] = Macierz(2, 3, "exm1", [[1, 2, 3],
+                                                                [0, 1, 2]])
+        self.historia_obiektow["exw1"] = Wektor(3, "exw1", [[1, 2, 3]])
+        self.historia_obiektow["pi"] = Stala(3.14,"pi")
+        self.historia_obiektow["2.5"] = Liczba(2.5)
+        self.historia_obiektow["x"] = Zmienna(5, "x")
+        zbior1 = Zbior("zbior1")
+        # zbior1["id"] = Macierz(3, 3, "id", [[1, 0, 0],
+        #                                     [0, 1, 0],
+        #                                     [0, 0, 1]])
+        zbior1["id4"] = Macierz(4, 4, "id4", [[1, 0, 0, 0],
+                                              [0, 1, 0, 0],
+                                              [0, 0, 1, 0],
+                                              [0, 0, 0, 1]])
+        for i in range(10, 20):
+            zbior1[str(i)] = Liczba(i)
+        self.historia_obiektow["zbior1"] = zbior1
+        for i in range(10):
+            self.historia_obiektow[str(i)] = Liczba(i)
+        
 
     def display_menu():
         clear_terminal()
@@ -60,10 +83,22 @@ class Menu:
         print("4. Nowa stała")
         print("5. Nowa zmienna")
         print("6. Nowy zbior")
-        print("7. Usuń wybrane obiekty")
-        print("8. Edytuj wybrany obiekt")
-        print("9. Przeglądaj zapisane obiekty matematyczne")
-        print("10. Menu Pamięci")
+        print("7. Edytuj wybrany obiekt")
+        print("8. Przeglądaj zapisane obiekty matematyczne")
+        print("9. Menu Pamięci")
+        print("Podaj liczbę:   ", end="")
+        
+    def display_set_menu():
+        clear_terminal()
+        print("------------MENU-ZBIORU---------------")
+        print("1. Nowa macierz")
+        print("2. Nowy wektor")
+        print("3. Nowa liczba")
+        print("4. Nowa stała")
+        print("5. Nowa zmienna")
+        print("6. Edytuj wybrany obiekt")
+        print("7. Przeglądaj zapisane obiekty matematyczne")
+        print("8. Menu historii obiektów")
         print("Podaj liczbę:   ", end="")
 
     def invalid_input():
@@ -72,14 +107,31 @@ class Menu:
         user_input = input()
         clear_terminal()
     
+    # def create_number_name():
+    #     clear_terminal()               
+    #     while(True):
+    #         print("Podaj wartość")
+    #         user_input = input()
+    #         if user_input == "":
+    #             return ""
+    #         if not ObiektMatematyczny.free_name(user_input):
+    #             print("Obiekt matematyczny o danej nazwie już istnieje")
+    #             user_input = input()
+    #             clear_terminal()
+    #             continue
+    #         return user_input
+    
     def create_name():
         clear_terminal()               
         while(True):
-            print("Podaj nazwę dla obiektu lub naciśnij ENTER jeśli nie chcesz go nazywać")
+            print("Podaj nazwę dla obiektu")
             user_input = input()
             if user_input == "":
-                return ""
-            if not ObiektMatematyczny.free_name(user_input):
+                print("Podano nieprawidłową nazwę")
+                user_input = input()
+                clear_terminal()
+                continue
+            if not ObiektMatematyczny.is_free_name(user_input):
                 print("Obiekt matematyczny o danej nazwie już istnieje")
                 user_input = input()
                 clear_terminal()
@@ -103,42 +155,41 @@ class Menu:
                     user_input = input()
                     clear_terminal()
     
-    def create_matrix(nazwa):
-        clear_terminal()
+    def enter_matrix_size(message):
         while(True):
-            print("Podaj liczbę wierszy")
+            print(message)
             user_input = input()
             if user_input.isdigit():
-                m = int(user_input)
-                if m < 1 or m > Macierz.MAX_MATRIX_SIZE:
+                s = int(user_input)
+                if s < 1 or s > Macierz.MAX_MATRIX_SIZE:
                     print("Podano nieprawidłową wartość")
                     user_input = input()
                     clear_terminal()
                 else:
-                    break
+                    return s
             else:
                 print("Podano nieprawidłową wartość")
                 user_input = input()
                 clear_terminal()
-        while(True):
-            print("Podaj liczbę kolumn")
-            user_input = input()
-            if user_input.isdigit():
-                n = int(user_input)
-                break
-            else:
-                print("Podano nieprawidłową wartość")
-                user_input = input()
-                clear_terminal()
-        macierz = Macierz(m, n, nazwa)
+    
+    def create_matrix(nazwa, is_wektor=False):
+        clear_terminal()
+        m = Menu.enter_matrix_size("Podaj liczbę wierszy")
+        n = 1
+        if not is_wektor:
+            n = Menu.enter_matrix_size("Podaj liczbę kolumn")
+        if is_wektor:
+            macierz = Wektor(m, nazwa)
+        else:
+            macierz = Macierz(m, n, nazwa)
         i = 1
         j = 1
         while True:
             clear_terminal()
             macierz.print(i, j)
-            print("Używaj wasd, aby poruszać się po macierzy")
+            print(f"Używaj wasd, aby poruszać się po {'wektorze' if is_wektor else 'macierzy'}")
             print("Naciśnij ENTER jeśli chcesz wpisać wartość w wybrane pole")
-            print("Naciśnij q jeśli chcesz zakończyć wypełnianie pól macierzy")
+            print(f"Naciśnij q jeśli chcesz zakończyć wypełnianie pól {'wektora' if is_wektor else 'macierzy'}")
             user_input = get_char()
             if user_input == "enter":
                 wartosc = Menu.create_number_val()
@@ -150,10 +201,10 @@ class Menu:
                 if j > 1:
                     j -= 1
             elif user_input == "s":
-                if i < n:
+                if i < m:
                     i += 1
             elif user_input == "d":
-                if j < m:
+                if j < n:
                     j += 1
             elif user_input == "q":
                 break
@@ -161,67 +212,112 @@ class Menu:
                 print("Podano nieprawidłową wartość")
                 user_input = input()
         return macierz
-            
+    
+    def create_set(nazwa):
+        zbior = Zbior(nazwa)
+        Menu.set_menu(zbior)
+        return zbior
+    
+    def new_matrix(self, kolekcja):
+        nazwa = Menu.create_name()
+        nowy_obiekt = Menu.create_matrix(nazwa)
+        kolekcja[repr(nowy_obiekt)] = nowy_obiekt
 
-            
+    def new_vector(self, kolekcja):
+        nazwa = Menu.create_name()
+        nowy_obiekt = Menu.create_matrix(nazwa, True)
+        kolekcja[repr(nowy_obiekt)] = nowy_obiekt
+
+    def new_number(self, kolekcja):
+        while True:
+            wartosc = Menu.create_number_val()
+            nazwa = str(wartosc)
+            if not ObiektMatematyczny.is_free_name(nazwa):
+                print("Podana liczba jest już zapisana")
+                user_input = input()
+                Menu.clear_terminal()
+                continue
+            break
+        nowy_obiekt = Liczba(wartosc)
+        kolekcja[repr(nowy_obiekt)] = nowy_obiekt
+        
+    def new_constant(self, kolekcja):
+        nazwa = Menu.create_name()
+        wartosc = Menu.create_number_val()
+        kolekcja[nazwa] = Stala(wartosc, nazwa)
+
+    def new_variable(self, kolekcja):
+        nazwa = Menu.create_name()
+        wartosc = Menu.create_number_val()
+        kolekcja[nazwa] = Zmienna(wartosc, nazwa)
+        
+    def new_set(self):
+        nazwa = Menu.create_name()
+        nowy_obiekt = Menu.create_set(nazwa)
+        self.historia_obiektow[nazwa] = nowy_obiekt
+
+    def object_memory_menu(self):
+        while (True):
+            Menu.display_object_memory_menu()
+            user_input = input()
+            if (user_input == "1"):
+                self.new_matrix(self.historia_obiektow)
+            elif (user_input == "2"):
+                self.new_vector(self.historia_obiektow)
+            elif (user_input == "3"):
+                self.new_number(self.historia_obiektow)
+            elif (user_input == "4"):
+                self.new_constant(self.historia_obiektow)
+            elif (user_input == "5"):
+                self.new_variable(self.historia_obiektow)
+            elif (user_input == "6"):
+                self.new_set()
+            elif (user_input == "7"):
+                pass
+            elif (user_input == "8"):
+                # self.historia_obiektow.print_all()
+                self.historia_obiektow.browse_history()
+                # user_input = input()
+            elif (user_input == "9"):
+                break
+            else:
+                Menu.invalid_input()
+
+    def set_menu(self, zbior):
+        while (True):
+            Menu.display_set_menu()
+            user_input = input()
+            if (user_input == "1"):
+                self.new_matrix(zbior)
+            elif (user_input == "2"):
+                self.new_vector(zbior)
+            elif (user_input == "3"):
+                self.new_number(zbior)
+            elif (user_input == "4"):
+                self.new_constant(zbior)
+            elif (user_input == "5"):
+                self.new_variable(zbior)
+            elif (user_input == "6"):
+                pass
+            elif (user_input == "7"):
+                # self.historia_obiektow.print_all()
+                zbior.browse_history()
+                # user_input = input()
+            elif (user_input == "8"):
+                break
+            else:
+                Menu.invalid_input()
 
     def run(self):
-        while (True):
+        while True:
             Menu.display_menu()
             user_input = input()
             if (user_input == "1"):
-                while (True):
+                while True:
                     Menu.display_memory_menu()
                     user_input = input()
                     if (user_input == "1"):
-                        while (True):
-                            Menu.display_object_memory_menu()
-                            user_input = input()
-                            if (user_input == "1"):
-                                nazwa = Menu.create_name()
-                                nowy_obiekt = Menu.create_matrix(nazwa)
-                                user_input = input()
-                                self.historia_obiektow[repr(nowy_obiekt)] = nowy_obiekt
-                            elif (user_input == "2"):
-                                pass
-                            elif (user_input == "3"):
-                                
-                                while True:
-                                    wartosc = Menu.create_number_val()
-                                    nazwa = str(wartosc)
-                                    if not ObiektMatematyczny.free_name(nazwa):
-                                        print("Podana liczba jest już zapisana")
-                                        user_input = input()
-                                        Menu.clear_terminal()
-                                        continue
-                                    break
-                                nowy_obiekt = Liczba(wartosc)
-                                self.historia_obiektow[repr(nowy_obiekt)] = nowy_obiekt
-                                pass
-                            elif (user_input == "4"):
-                                nazwa = Menu.create_name()
-                                wartosc = Menu.create_number_val()
-                                self.historia_obiektow[nazwa] = Liczba()
-                                pass
-                            elif (user_input == "5"):
-                                nazwa = Menu.create_name()
-                                wartosc = Menu.create_number_val()
-                                self.historia_obiektow[nazwa] = Liczba()
-                                pass
-                            
-                            elif (user_input == "6"):
-                                pass
-                            elif (user_input == "7"):
-                                pass
-                            elif (user_input == "8"):
-                                pass
-                            elif (user_input == "9"):
-                                self.historia_obiektow.print_all()
-                                user_input = input()
-                            elif (user_input == "10"):
-                                break
-                            else:
-                                Menu.invalid_input()
+                        self.object_memory_menu()
                     elif (user_input == "2"):
                         """
                         TODO
