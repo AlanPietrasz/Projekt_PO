@@ -9,18 +9,31 @@ from aux import *
 class Historia:
     MAX_NUMBER_OF_SHOWED_ELEMS = 10
 
-    def __init__(self):
-        self.slownik_indeks_klucz = list()
+    def __init__(self, slownik_nazwa_wartosc = dd()):
+        self.lista_indeks_nazwa = list()
         self.slownik_nazwa_wartosc = dd()
-        self.update_len()
         
-    def __setitem__(self, nazwa, wartosc):
-        self.slownik_indeks_klucz.append(nazwa)
-        self.update_len()
+    def __setitem__(self, nazwa, wartosc, zbior = False):
+        if nazwa in self.lista_indeks_nazwa:
+            raise ValueError(f"Obiekt matematyczny o danej nazwie już istnieje w {'zbiorze' if zbior else 'historii'}")
+        self.lista_indeks_nazwa.append(nazwa) 
         self.slownik_nazwa_wartosc[nazwa] = wartosc
+
+    def create_name(self):
+        clear_terminal()               
+        while(True):
+            print("Podaj nazwę")
+            user_input = input()
+            if user_input == "":
+                invalid_input("Podano nieprawidłową nazwę")
+                continue
+            if user_input in self.lista_indeks_nazwa:
+                invalid_input("Obiekt matematyczny o danej nazwie już istnieje")
+                continue
+            return user_input
         
     def __getitem__(self, ind):
-        return Historia.get_val(self.slownik_indeks_klucz[ind-1])
+        return Historia.get_val(self.lista_indeks_nazwa[ind-1])
 
 
     def get_val(self, nazwa):
@@ -29,13 +42,13 @@ class Historia:
     def print_range(self, b, e, chosen=0, color=Fore.GREEN):
         if b - e > Historia.MAX_NUMBER_OF_SHOWED_ELEMS:
             e = b + Historia.MAX_NUMBER_OF_SHOWED_ELEMS
-        if e > self.dlugosc_historii:
-            e = self.dlugosc_historii
+        if e > len(self.lista_indeks_nazwa):
+            e = len(self.lista_indeks_nazwa)
         clear_terminal()
         print("---------HISTORIA-----------")
         max_len = len(str(e))
         for i in range(b-1, e):
-            obiekt = self.slownik_nazwa_wartosc[self.slownik_indeks_klucz[i]]
+            obiekt = self.slownik_nazwa_wartosc[self.lista_indeks_nazwa[i]]
             print(f"{Fore.YELLOW}{i+1}: {Style.RESET_ALL}", end="")
             print(" " * (max_len - len(str(i+1))), end="")
             print(f"{Fore.CYAN}{self.print_type_repr(obiekt)} {Style.RESET_ALL}", end="")
@@ -66,7 +79,7 @@ class Historia:
                     chosen -= 1
             elif user_input == "s":
                 if chosen + 1 > i + self.MAX_NUMBER_OF_SHOWED_ELEMS:
-                    if i + self.MAX_NUMBER_OF_SHOWED_ELEMS < self.dlugosc_historii:
+                    if i + self.MAX_NUMBER_OF_SHOWED_ELEMS < len(self.lista_indeks_nazwa):
                         i += 1
                         chosen += 1
                 else:
@@ -74,11 +87,7 @@ class Historia:
             elif user_input == "q":
                 break
             else:
-                invalid_input("Podano nieprawidłową wartość")
-        
-    
-    def update_len(self):
-        self.dlugosc_historii = len(self.slownik_indeks_klucz)        
+                invalid_input("Podano nieprawidłową wartość")       
             
     def print_all(self):
         Historia.print_range(self, 1, self.dlugosc_historii)

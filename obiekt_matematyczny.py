@@ -3,7 +3,7 @@ from aux import clear_terminal, invalid_input
 class ObiektMatematyczny:
     zbior_nazw = set()
     def __init__(self, nazwa):
-        ObiektMatematyczny.set_name(nazwa)
+        self.nazwa = nazwa
         
     # def set_name(self, nazwa):
     #     if self.free_name(nazwa):
@@ -16,17 +16,17 @@ class ObiektMatematyczny:
     #         return False
     #     return True
         
-    def set_name(self, nazwa):
-        if not ObiektMatematyczny.is_free_name(nazwa):
-            raise ValueError("Obiekt matematyczny o danej nazwie już istnieje")
-        self.nazwa = nazwa
-        if nazwa != "":
-            ObiektMatematyczny.zbior_nazw.add(nazwa)
+    # def set_name(self, nazwa):
+    #     if not ObiektMatematyczny.is_free_name(nazwa):
+    #         raise ValueError("Obiekt matematyczny o danej nazwie już istnieje")
+    #     self.nazwa = nazwa
+    #     if nazwa != "":
+    #         ObiektMatematyczny.zbior_nazw.add(nazwa)
         
-    def is_free_name(nazwa):
-        if nazwa in ObiektMatematyczny.zbior_nazw:
-            return False
-        return True
+    # def is_free_name(nazwa):
+    #     if nazwa in ObiektMatematyczny.zbior_nazw:
+    #         return False
+    #     return True
         
     def __str__(self):
         pass
@@ -43,22 +43,6 @@ class ObiektMatematyczny:
     def print_all():
         for e in ObiektMatematyczny.zbior_nazw:
             print(e)
-    
-    
-    def create_name():
-        clear_terminal()               
-        while(True):
-            print("Podaj nazwę dla obiektu")
-            user_input = input()
-            if user_input == "":
-                print("Podano nieprawidłową nazwę")
-                user_input = input()
-                clear_terminal()
-                continue
-            if not ObiektMatematyczny.is_free_name(user_input):
-                invalid_input("Obiekt matematyczny o danej nazwie już istnieje")
-                continue
-            return user_input
 
     def create_number_val():
         clear_terminal()               

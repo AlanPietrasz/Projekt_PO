@@ -6,7 +6,7 @@ class Zmienna(Liczba):
     slownik_wartosci = dict()
     
     def __init__(self, wartosc, nazwa):
-        self.set_name(nazwa)
+        self.nazwa = nazwa
         self.slownik_wartosci[self.nazwa] = wartosc
       
     def get_value(self):

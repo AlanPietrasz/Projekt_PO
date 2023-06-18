@@ -16,7 +16,7 @@ class HistoriaObiektow(Historia):
         Historia.__init__(self)
         
     def show_object(self, i):
-        object = self.slownik_nazwa_wartosc[self.slownik_indeks_klucz[i-1]]
+        object = self.slownik_nazwa_wartosc[self.lista_indeks_nazwa[i-1]]
         if not isinstance(object, Zbior):
             if not isinstance(object, Liczba) or isinstance(object, Stala) or isinstance(object, Zmienna):
                 print(repr(object))
@@ -81,12 +81,12 @@ class HistoriaObiektow(Historia):
                 invalid_input("Podano niepoprawne dane")        
      
     def new_matrix(self):
-        nazwa = ObiektMatematyczny.create_name()
+        nazwa = self.create_name()
         nowy_obiekt = Macierz.create_matrix(nazwa)
         self[repr(nowy_obiekt)] = nowy_obiekt
 
     def new_vector(self):
-        nazwa = ObiektMatematyczny.create_name()
+        nazwa = self.create_name()
         nowy_obiekt = Wektor.create_wektor(nazwa)
         self[repr(nowy_obiekt)] = nowy_obiekt       
         
@@ -104,16 +104,16 @@ class HistoriaObiektow(Historia):
         self[repr(nowy_obiekt)] = nowy_obiekt       
         
     def new_constant(self):
-        nazwa = ObiektMatematyczny.create_name()
+        nazwa = self.create_name()
         wartosc = Liczba.create_number_val()
         self[nazwa] = Stala(wartosc, nazwa)
         
     def new_variable(self):
-        nazwa = ObiektMatematyczny.create_name()
+        nazwa = self.create_name()
         wartosc = Liczba.create_number_val()
         self[nazwa] = Zmienna(wartosc, nazwa)
         
     def new_set(self):
-        nazwa = ObiektMatematyczny.create_name()
+        nazwa = self.create_name()
         nowy_obiekt = Zbior.create_set(nazwa)
         self[nazwa] = nowy_obiekt

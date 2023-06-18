@@ -19,10 +19,10 @@ class Macierz(ObiektMatematyczny):
         self.macierz = np.reshape(tab, (m, n))
         if nazwa == "":
             self.has_a_name = False
-            self.set_name(repr(self.macierz))
+            self.nazwa = repr(self.macierz)
         else:
             self.has_a_name = True
-            self.set_name(nazwa)
+            self.nazwa = nazwa
         
     def get_value(self):
         return self.macierz    

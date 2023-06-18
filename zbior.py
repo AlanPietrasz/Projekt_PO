@@ -2,6 +2,7 @@ from aux import *
 from collections import defaultdict as dd
 from colorama import Fore, Style
 
+from historia import Historia
 from obiekt_matematyczny import ObiektMatematyczny
 from macierz import Macierz
 from wektor import Wektor
@@ -9,33 +10,28 @@ from liczba import Liczba
 from stala import Stala
 from zmienna import Zmienna
 
-class Zbior(ObiektMatematyczny):
+class Zbior(ObiektMatematyczny, Historia):
     MAX_NUMBER_OF_SHOWED_ELEMS = 10
     MAX_SET_LEN = 20
     
-    def __init__(self, nazwa, zbior_wartosci = dd()):
-        self.set_name(nazwa)
-        self.zbior_wartosci = zbior_wartosci
-        self.lista_nazw =  list()
+    def __init__(self, nazwa, slownik_nazwa_wartosc = dd()):
+        self.nazwa = nazwa
+        Historia.__init__(self, slownik_nazwa_wartosc)
+        
         
     def __setitem__(self, nazwa, obiekt):
-        if self.set_len() >= Zbior.MAX_SET_LEN:
+        if len(self.lista_indeks_nazwa) >= Zbior.MAX_SET_LEN:
             raise ValueError("Osiągnięto maksymalną liczbę obiektów matematycznych w danym zbiorze")
         else:
-            if nazwa in self.lista_nazw:
-                raise ValueError("Obiekt matematyczny o danej nazwie już istnieje w zbiorze")
-            self.zbior_wartosci[nazwa] = obiekt
-            self.lista_nazw.append(nazwa)
+            Historia.__setitem__(self, nazwa, obiekt, zbior = True)
         
     def __getitem__(self, nazwa):
-        return self.zbior_wartosci[nazwa]
+        return self.slownik_nazwa_wartosc[nazwa]
     
-    def set_len(self):
-        return len(self.lista_nazw)
 
     def remove(self, nazwa):
-        self.lista_nazw.remove(nazwa)
-        self.zbior_wartosci.pop(nazwa)
+        self.lista_indeks_nazwa.remove(nazwa)
+        self.slownik_nazwa_wartosc.pop(nazwa)
         
     def print_type_repr(obiekt):
         if isinstance(obiekt, Zmienna):
@@ -52,7 +48,7 @@ class Zbior(ObiektMatematyczny):
             return "Macierz " 
         
     def show_object(self, i):
-        object = self.zbior_wartosci[self.lista_nazw[i-1]]
+        object = self.slownik_nazwa_wartosc[self.lista_indeks_nazwa[i-1]]
         if not isinstance(object, Liczba) or isinstance(object, Stala) or isinstance(object, Zmienna):
             print(repr(object))
         print(object)
@@ -68,7 +64,7 @@ class Zbior(ObiektMatematyczny):
         print("Nazwa zbioru: ", self.nazwa)
         max_len = len(str(e))
         for i in range(b-1, e):
-            obiekt = self.zbior_wartosci[self.lista_nazw[i]]
+            obiekt = self.slownik_nazwa_wartosc[self.lista_indeks_nazwa[i]]
             print(f"{Fore.YELLOW}{i+1}: {Style.RESET_ALL}", end="")
             print(" " * (max_len - len(str(i+1))), end="")
             print(f"{Fore.CYAN}{Zbior.print_type_repr(obiekt)} {Style.RESET_ALL}", end="")
@@ -98,8 +94,8 @@ class Zbior(ObiektMatematyczny):
                     chosen -= 1
 
             elif user_input == "s":
-                if chosen + 1 > i + self.MAX_NUMBER_OF_SHOWED_ELEMS:
-                    if i + self.MAX_NUMBER_OF_SHOWED_ELEMS < self.set_len():
+                if chosen + 1 > i + self.MAX_NUMBER_OF_SHOWED_ELEMS - 1:
+                    if i + self.MAX_NUMBER_OF_SHOWED_ELEMS - 1 < self.set_len():
                         i += 1
                         chosen += 1
                 else:
