@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 from colorama import Fore, Style
 
+from aux import *
 from obiekt_matematyczny import ObiektMatematyczny 
 
 
@@ -92,6 +93,78 @@ class Macierz(ObiektMatematyczny):
                 else:
                     print(str(arr[i, j]).rjust(max_width), end=" ")
             print()
+
+
+    def enter_matrix_size(message):
+        while True:
+            print(message)
+            user_input = input()
+            if user_input.isdigit():
+                s = int(user_input)
+                if s < 1 or s > Macierz.MAX_MATRIX_SIZE:
+                    print("Podano nieprawidłową wartość")
+                    user_input = input()
+                    clear_terminal()
+                else:
+                    return s
+            else:
+                print("Podano nieprawidłową wartość")
+                user_input = input()
+                clear_terminal()
+    
+    def create_matrix(nazwa):
+        clear_terminal()
+        m = Macierz.enter_matrix_size("Podaj liczbę wierszy")
+        n = Macierz.enter_matrix_size("Podaj liczbę kolumn")
+        macierz = Macierz(m, n, nazwa)
+        return Macierz.edit_matrix(macierz, m, n, is_wektor = False)
+    
+    def edit_matrix(macierz, m, n, is_wektor = False):
+        i = 1
+        j = 1
+        while True:
+            clear_terminal()
+            macierz.print(i, j)
+            print(f"Używaj wasd, aby poruszać się po {'wektorze' if is_wektor else 'macierzy'}")
+            print("Naciśnij ENTER jeśli chcesz wpisać wartość w wybrane pole")
+            print(f"Naciśnij q jeśli chcesz zakończyć wypełnianie pól {'wektora' if is_wektor else 'macierzy'}")
+            user_input = get_char()
+            if user_input == "enter":
+                wartosc = ObiektMatematyczny.create_number_val()
+                macierz[i, j] = wartosc
+            elif user_input == "w":
+                if i > 1:
+                    i -= 1
+            elif user_input == "a":
+                if j > 1:
+                    j -= 1
+            elif user_input == "s":
+                if i < m:
+                    i += 1
+            elif user_input == "d":
+                if j < n:
+                    j += 1
+            elif user_input == "q":
+                break
+            else:
+                print("Podano nieprawidłową wartość")
+                user_input = input()
+        return macierz
+
+    def enter_matrix():
+        while(True):
+            print("------------MENU-GŁÓWNE-----------------")
+            print("1. Utwórz nową macierz")
+            print("2. Wybierz macierz zapisaną w pamięci")
+            print("Podaj liczbę:   ", end="")
+            user_input = input()
+            if user_input == "1":
+                nowy_obiekt = Macierz.create_matrix()
+            elif user_input == "2":
+                pass
+            else:
+                invalid_input("Podano niepoprawne dane")
+                
 
 
 # m1 = Macierz(15, 5)

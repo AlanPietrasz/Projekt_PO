@@ -1,4 +1,5 @@
 
+from obiekt_matematyczny import ObiektMatematyczny
 from liczba import Liczba
 
 class Zmienna(Liczba):

@@ -1,4 +1,4 @@
-from aux import clear_terminal, get_char
+from aux import *
 from collections import defaultdict as dd
 from colorama import Fore, Style
 
@@ -12,34 +12,29 @@ from zmienna import Zmienna
 class Zbior(ObiektMatematyczny):
     MAX_NUMBER_OF_SHOWED_ELEMS = 10
     MAX_SET_LEN = 20
-    zbior_nazw = list()
     
     def __init__(self, nazwa, zbior_wartosci = dd()):
         self.set_name(nazwa)
         self.zbior_wartosci = zbior_wartosci
+        self.lista_nazw =  list()
         
     def __setitem__(self, nazwa, obiekt):
         if self.set_len() >= Zbior.MAX_SET_LEN:
             raise ValueError("Osiągnięto maksymalną liczbę obiektów matematycznych w danym zbiorze")
         else:
-            if not Zbior.is_free_name(nazwa):
+            if nazwa in self.lista_nazw:
                 raise ValueError("Obiekt matematyczny o danej nazwie już istnieje w zbiorze")
             self.zbior_wartosci[nazwa] = obiekt
-            Zbior.zbior_nazw.append(nazwa)
+            self.lista_nazw.append(nazwa)
         
     def __getitem__(self, nazwa):
         return self.zbior_wartosci[nazwa]
     
-    def is_free_name(nazwa):
-        if nazwa in Zbior.zbior_nazw:
-            return False
-        return True
-    
     def set_len(self):
-        return len(self.zbior_nazw)
+        return len(self.lista_nazw)
 
     def remove(self, nazwa):
-        Zbior.zbior_nazw.remove(nazwa)
+        self.lista_nazw.remove(nazwa)
         self.zbior_wartosci.pop(nazwa)
         
     def print_type_repr(obiekt):
@@ -57,7 +52,7 @@ class Zbior(ObiektMatematyczny):
             return "Macierz " 
         
     def show_object(self, i):
-        object = self.zbior_wartosci[self.zbior_nazw[i-1]]
+        object = self.zbior_wartosci[self.lista_nazw[i-1]]
         if not isinstance(object, Liczba) or isinstance(object, Stala) or isinstance(object, Zmienna):
             print(repr(object))
         print(object)
@@ -73,7 +68,7 @@ class Zbior(ObiektMatematyczny):
         print("Nazwa zbioru: ", self.nazwa)
         max_len = len(str(e))
         for i in range(b-1, e):
-            obiekt = self.zbior_wartosci[self.zbior_nazw[i]]
+            obiekt = self.zbior_wartosci[self.lista_nazw[i]]
             print(f"{Fore.YELLOW}{i+1}: {Style.RESET_ALL}", end="")
             print(" " * (max_len - len(str(i+1))), end="")
             print(f"{Fore.CYAN}{Zbior.print_type_repr(obiekt)} {Style.RESET_ALL}", end="")
@@ -87,7 +82,7 @@ class Zbior(ObiektMatematyczny):
         i = 1
         chosen = 1
         while True:
-            self.print_range(i, i + self.MAX_NUMBER_OF_SHOWED_ELEMS, chosen)
+            self.print_range(i, i + self.MAX_NUMBER_OF_SHOWED_ELEMS - 1, chosen)
             print("Używaj ws, aby poruszać się po zbiorze")
             print("Naciśnij ENTER jeśli chcesz zobaczyć wartość w wybranym polu")
             print("Naciśnij q jeśli chcesz zakończyć przeglądanie zbioru")
@@ -118,3 +113,83 @@ class Zbior(ObiektMatematyczny):
     # def __setitem__(self, obiekt)
         
     # def __getitem__(self, nazwa)
+    
+    def display_set_menu():
+        clear_terminal()
+        print("------------MENU-ZBIORU---------------")
+        print("1. Nowa macierz")
+        print("2. Nowy wektor")
+        print("3. Nowa liczba")
+        print("4. Nowa stała")
+        print("5. Nowa zmienna")
+        print("6. Edytuj wybrany obiekt")
+        print("7. Przeglądaj zapisane obiekty matematyczne")
+        print("8. Menu historii obiektów")
+        print("Podaj liczbę:   ", end="")
+        
+    def create_set(nazwa):
+        zbior = Zbior(nazwa)
+        zbior.set_menu()
+        return zbior
+    
+
+
+
+    def set_menu(self):
+        while True:
+            Zbior.display_set_menu()
+            user_input = input()
+            if (user_input == "1"):
+                self.new_matrix()
+            elif (user_input == "2"):
+                self.new_vector()
+            elif (user_input == "3"):
+                self.new_number()
+            elif (user_input == "4"):
+                self.new_constant()
+            elif (user_input == "5"):
+                self.new_variable()
+            elif (user_input == "6"):
+                pass
+            elif (user_input == "7"):
+                # self.historia_obiektow.print_all()
+                self.browse_set()
+                # user_input = input()
+            elif (user_input == "8"):
+                break
+            else:
+                invalid_input("Podano niepoprawne dane")
+                
+                
+    def new_matrix(self):
+        nazwa = ObiektMatematyczny.create_name()
+        nowy_obiekt = Macierz.create_matrix(nazwa)
+        self[repr(nowy_obiekt)] = nowy_obiekt
+
+    def new_vector(self):
+        nazwa = ObiektMatematyczny.create_name()
+        nowy_obiekt = Wektor.create_wektor(nazwa)
+        self[repr(nowy_obiekt)] = nowy_obiekt       
+        
+    def new_number(self):
+        while True:
+            wartosc = ObiektMatematyczny.create_number_val()
+            nazwa = str(wartosc)
+            if not ObiektMatematyczny.is_free_name(nazwa):
+                print("Podana liczba jest już zapisana")
+                user_input = input()
+                clear_terminal()
+                continue
+            break
+        nowy_obiekt = Liczba(wartosc)
+        self[repr(nowy_obiekt)] = nowy_obiekt       
+        
+    def new_constant(self):
+        nazwa = ObiektMatematyczny.create_name()
+        wartosc = Liczba.create_number_val()
+        self[nazwa] = Stala(wartosc, nazwa)
+        
+    def new_variable(self):
+        nazwa = ObiektMatematyczny.create_name()
+        wartosc = Liczba.create_number_val()
+        self[nazwa] = Zmienna(wartosc, nazwa)

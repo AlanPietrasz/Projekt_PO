@@ -1,3 +1,4 @@
+from aux import clear_terminal, invalid_input
 
 class ObiektMatematyczny:
     zbior_nazw = set()
@@ -19,7 +20,8 @@ class ObiektMatematyczny:
         if not ObiektMatematyczny.is_free_name(nazwa):
             raise ValueError("Obiekt matematyczny o danej nazwie już istnieje")
         self.nazwa = nazwa
-        ObiektMatematyczny.zbior_nazw.add(nazwa)
+        if nazwa != "":
+            ObiektMatematyczny.zbior_nazw.add(nazwa)
         
     def is_free_name(nazwa):
         if nazwa in ObiektMatematyczny.zbior_nazw:
@@ -43,3 +45,32 @@ class ObiektMatematyczny:
             print(e)
     
     
+    def create_name():
+        clear_terminal()               
+        while(True):
+            print("Podaj nazwę dla obiektu")
+            user_input = input()
+            if user_input == "":
+                print("Podano nieprawidłową nazwę")
+                user_input = input()
+                clear_terminal()
+                continue
+            if not ObiektMatematyczny.is_free_name(user_input):
+                invalid_input("Obiekt matematyczny o danej nazwie już istnieje")
+                continue
+            return user_input
+
+    def create_number_val():
+        clear_terminal()               
+        while(True):
+            print("Podaj wartość")
+            user_input = input()
+            try:
+                user_input = int(user_input)
+                return int(user_input)
+            except:
+                try:
+                    user_input = float(user_input)
+                    return float(user_input)
+                except:
+                    invalid_input("Podano nieprawidłową wartość")

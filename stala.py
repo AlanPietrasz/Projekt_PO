@@ -1,4 +1,6 @@
 
+
+from obiekt_matematyczny import ObiektMatematyczny
 from liczba import Liczba
 
 class Stala(Liczba):
@@ -13,3 +15,4 @@ class Stala(Liczba):
     
     def __str__(self):
         return str(self.get_value())
+

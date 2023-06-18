@@ -29,5 +29,9 @@ def get_char():
         finally:
             termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
             
-
+def invalid_input(message):
+    print()
+    print(message)
+    user_input = input()
+    clear_terminal()
 

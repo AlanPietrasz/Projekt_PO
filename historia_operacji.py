@@ -1,7 +1,12 @@
 
 from historia import Historia
 
-class HistoriaOperacji:
-    # def __init__(self):
-    #     super().__init__(self)
-    pass
+from operacja import Operacja
+from dodawanie import Dodawanie
+
+class HistoriaOperacji(Historia):
+    def __init__(self):
+        Historia.__init__(self)
+    
+    
+    

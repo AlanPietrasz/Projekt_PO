@@ -1,5 +1,7 @@
 
+from aux import clear_terminal
 from obiekt_matematyczny import ObiektMatematyczny 
+
 
 class Liczba(ObiektMatematyczny):
     def __init__(self, wartosc):
@@ -11,3 +13,4 @@ class Liczba(ObiektMatematyczny):
     
     def __str__(self):
         return str(self.get_value())
+    
