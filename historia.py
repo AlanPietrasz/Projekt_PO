@@ -27,7 +27,7 @@ class Historia:
         
     def __getitem__(self, ind):
         return Historia.get_val(self.slownik_indeks_klucz[ind-1])
-    
+
     def print_type_repr(obiekt):
         if isinstance(obiekt, Zmienna):
             return "Zmienna "

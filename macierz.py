@@ -25,6 +25,9 @@ class Macierz(ObiektMatematyczny):
         
     def get_value(self):
         return self.macierz    
+    
+    def get_dimensions(self):
+        return (self.m, self.n)
 
     def __getitem__(self, indices):
         i, j = indices
@@ -41,6 +44,11 @@ class Macierz(ObiektMatematyczny):
     
     def __str__(self):
         return str(self.macierz)
+    
+    def eval(self):
+        for i in range(self.m):
+            for j in range(self.n):
+                self.macierz[i, j] = eval(self.macierz[i, j])
         
         
     # def print(self, row=-1, col=-1, color=Fore.GREEN, color2=Fore.CYAN):

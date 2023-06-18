@@ -1,9 +1,5 @@
 
 from aux import clear_terminal, get_char
-# from pynput import keyboard
-# from pynput.keyboard import Key
-
-
 
 from obiekt_matematyczny import ObiektMatematyczny
 from macierz import Macierz
@@ -13,9 +9,9 @@ from stala import Stala
 from zmienna import Zmienna
 from zbior import Zbior
 
-# from historia_obiektow import HistoriaObiektow
-# from historia_operacji import HistoriaOperacji
 from historia import Historia
+
+from dodawanie import Dodawanie
 
 class Menu:
     def __init__(self):
@@ -24,6 +20,9 @@ class Menu:
         self.historia_obiektow["id"] = Macierz(3, 3, "id", [[1, 0, 0],
                                                             [0, 1, 0],
                                                             [0, 0, 1]])
+        self.historia_obiektow["exm2"] = Macierz(3, 3, "exm2", [[1, 2, 2],
+                                                                [0, 1, 0],
+                                                                [4, 0, 1]])
         self.historia_obiektow["exm1"] = Macierz(2, 3, "exm1", [[1, 2, 3],
                                                                 [0, 1, 2]])
         self.historia_obiektow["exw1"] = Wektor(3, "exw1", [[1, 2, 3]])
@@ -309,6 +308,12 @@ class Menu:
                 Menu.invalid_input()
 
     def run(self):
+        m1 = self.historia_obiektow.get_val("id")
+        m2 = self.historia_obiektow.get_val("exm2")
+        d1 = Dodawanie("dod1", m1, m2)
+        d1.print_operation_steps()
+        
+        user_input = input()
         while True:
             Menu.display_menu()
             user_input = input()
@@ -328,6 +333,7 @@ class Menu:
                     else:
                         Menu.invalid_input()
             elif (user_input == "2"):
+                
                 pass
             elif (user_input == "3"):
                 pass
