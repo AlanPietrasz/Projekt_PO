@@ -24,26 +24,23 @@ class Zbior(ObiektMatematyczny, Historia):
             raise ValueError("Osiągnięto maksymalną liczbę obiektów matematycznych w danym zbiorze")
         else:
             Historia.__setitem__(self, nazwa, obiekt, zbior = True)
-        
-    # def __getitem__(self, nazwa):
-    #     Historia.__getitem__(self, nazwa)
+
+    def modify(self):
+        self.browse_set("return_object").modify()
     
-    def show_object(self, i):
+    def show_object(self, i, wait=True, mode="show_object"):
         object = self.slownik_nazwa_wartosc[self.lista_indeks_nazwa[i-1]]
         if not isinstance(object, Liczba) or isinstance(object, Stala) or isinstance(object, Zmienna):
             print(repr(object))
         print(object)
-        user_input = input() 
+        if wait:
+            user_input = input()
         
     def print_range(self, b, e, chosen=0, naglowek = "ZBIÓR", color=Fore.GREEN):
         Historia.print_range(self, b, e, chosen, naglowek, color)
 
-    def browse_set(self):
-        self.browse_history()
-        
-    # def __setitem__(self, obiekt)
-        
-    # def __getitem__(self, nazwa)
+    def browse_set(self, mode="show_object"):
+        return self.browse_history(mode)
     
     def display_set_menu():
         clear_terminal()

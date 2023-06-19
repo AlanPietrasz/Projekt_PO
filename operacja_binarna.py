@@ -57,6 +57,7 @@ class OperacjaBinarna(OperacjaUnarna):
         arr = self.macierz
         arr2 = other.macierz
         arr3 = other2.macierz
+        height = max([arr.shape[0], arr2.shape[0], arr3.shape[0]])
         max_width = np.vectorize(lambda x: len(str(x)))(arr).max()
         max_width2 = np.vectorize(lambda x: len(str(x)))(arr2).max()
         max_width3 = np.vectorize(lambda x: len(str(x)))(arr3).max()
@@ -82,34 +83,45 @@ class OperacjaBinarna(OperacjaUnarna):
             res += f"{color2}{j+1}:{Style.RESET_ALL}"
         res += "\n"
         
-        for i in range(arr.shape[0]):
-            res += f"{color2}{i+1}:{Style.RESET_ALL} "
-            res += " " * (m_len - (len(str(i+1))))
-            for j in range(arr.shape[1]):
-                if (i + 1, j + 1) in color_list1:
-                    res += f"{color}{str(arr[i, j]).rjust(max_width)}{Style.RESET_ALL} "
-                else:
-                    res += str(arr[i, j]).rjust(max_width) + " "
+        for i in range(height):
+            if not arr.shape[0] < i + 1:
+                res += f"{color2}{i+1}:{Style.RESET_ALL} "
+                res += " " * (m_len - (len(str(i+1))))
+                for j in range(arr.shape[1]):
+                    if (i + 1, j + 1) in color_list1:
+                        res += f"{color}{str(arr[i, j]).rjust(max_width)}{Style.RESET_ALL} "
+                    else:
+                        res += str(arr[i, j]).rjust(max_width) + " "
+            else:
+                res += " " * (m_len + 1) + " " * ((max_width + 1) * arr.shape[1]) + " " 
             
             res += f" {operator if i == int(self.m / 2) else ' '} "
             
-            res += f"{color2}{i+1}:{Style.RESET_ALL} "
-            res += " " * (m2_len - (len(str(i+1))))
-            for j in range(arr2.shape[1]):
-                if (i + 1, j + 1) in color_list2:
-                    res += f"{color}{str(arr2[i, j]).rjust(max_width2)}{Style.RESET_ALL} "
-                else:
-                    res += str(arr2[i, j]).rjust(max_width2) + " "
+            if not arr2.shape[0] < i + 1:
+                res += f"{color2}{i+1}:{Style.RESET_ALL} "
+                res += " " * (m2_len - (len(str(i+1))))
+                for j in range(arr2.shape[1]):
+                    if (i + 1, j + 1) in color_list2:
+                        res += f"{color}{str(arr2[i, j]).rjust(max_width2)}{Style.RESET_ALL} "
+                    else:
+                        res += str(arr2[i, j]).rjust(max_width2) + " "
+
+            else:
+                res += " " * m2_len + " " * max_width2 + " " 
  
             res += f" {'=' if i == int(self.m / 2) else ' '} "
             
-            res += f"{color2}{i+1}:{Style.RESET_ALL} "
-            res += " " * (m3_len - (len(str(i+1))))
-            for j in range(arr3.shape[1]):
-                if (i + 1, j + 1) in color_list3:
-                    res += f"{color}{str(arr3[i, j]).rjust(max_width3)}{Style.RESET_ALL} "
-                else:
-                    res += str(arr3[i, j]).rjust(max_width3) + " "
+            if not arr.shape[0] < i + 1:
+                res += f"{color2}{i+1}:{Style.RESET_ALL} "
+                res += " " * (m3_len - (len(str(i+1))))
+                for j in range(arr3.shape[1]):
+                    if (i + 1, j + 1) in color_list3:
+                        res += f"{color}{str(arr3[i, j]).rjust(max_width3)}{Style.RESET_ALL} "
+                    else:
+                        res += str(arr3[i, j]).rjust(max_width3) + " "
+            else:
+                res += " " * m3_len + " " * max_width3 + " " 
+            
                     
             res += "\n"
         return res

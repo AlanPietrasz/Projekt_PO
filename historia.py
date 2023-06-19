@@ -73,7 +73,7 @@ class Historia:
             else:
                 print(f"{color}{repr(obiekt)}{Style.RESET_ALL}")
 
-    def browse_history(self):
+    def browse_history(self, mode="show_object"):
         i = 1
         chosen = 1
         while True:
@@ -83,7 +83,14 @@ class Historia:
             print("Naciśnij q jeśli chcesz zakończyć przeglądanie historii")
             user_input = get_char()
             if user_input == "enter":
-                self.show_object(chosen)
+                if mode == "show_object":
+                    self.show_object(chosen)
+                elif mode == "return_object":
+                    res = self.return_menu(chosen)
+                    if res != None:
+                        return res
+                elif mode == "remove_object":
+                    self.delete_menu(chosen)
             elif user_input == "w":
                 if chosen - 1 < i:
                     if i > 1:
@@ -92,7 +99,8 @@ class Historia:
                 else:
                     chosen -= 1
             elif user_input == "s":
-                #user_input = input()
+                if chosen >= self.dlugosc_historii():
+                    continue
                 if chosen + 1 > i + self.MAX_NUMBER_OF_SHOWED_ELEMS - 1:
                     if i + self.MAX_NUMBER_OF_SHOWED_ELEMS - 1 < self.dlugosc_historii(): #len(self.lista_indeks_nazwa):
                         i += 1
@@ -102,7 +110,60 @@ class Historia:
             elif user_input == "q":
                 break
             else:
-                invalid_input("Podano nieprawidłową wartość")       
+                invalid_input("Podano nieprawidłową wartość")
+    
+    def return_object_memory_menu():
+        print("Czy chcesz wybrać podany obiekt?")
+        print("1. Tak")
+        print("2. Wybierz inny")
+        print("Podaj liczbę:   ", end="")
+    
+    def return_menu(self, chosen):
+        while True:
+            self.show_object(chosen, wait=False, mode="return_object")
+            Historia.return_object_memory_menu()
+            user_input = input()
+            if (user_input == "1"):
+                return self[chosen]
+            elif (user_input == "2"):
+                return None
+            else:
+                invalid_input("Podano niepoprawne dane") 
+
+    def delete_object_memory_menu():
+        print("Czy chcesz usunąć podany obiekt?")
+        print("1. Tak")
+        print("2. Wybierz inny")
+        print("Podaj liczbę:   ", end="")
+    
+    def delete_menu(self, chosen):
+        while True:
+            self.show_object(chosen)
+            Historia.delete_object_memory_menu()
+            user_input = input()
+            if (user_input == "1"):
+                self.remove(self.lista_indeks_nazwa[chosen])
+                break
+            elif (user_input == "2"):
+                break
+            else:
+                invalid_input("Podano niepoprawne dane") 
+        
+    # def add_to_history(self, operacja):
+    #     while (True):
+    #         Historia.return_matrix_object_memory_menu()
+    #         user_input = input()
+    #         if (user_input == "1"):
+    #             nazwa = self.create_name()
+    #             self[nazwa] = operacja
+    #             break
+    #         elif (user_input == "2"):
+    #             break
+    #         else:
+    #             invalid_input("Podano niepoprawne dane")    
+                
+    def return_from_history(self):
+        return self.browse_history(mode="return_object")
             
     def print_all(self):
         Historia.print_range(self, 1, self.dlugosc_historii())

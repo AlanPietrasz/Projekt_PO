@@ -14,16 +14,40 @@ from zbior import Zbior
 class HistoriaObiektow(Historia):
     def __init__(self):
         Historia.__init__(self)
+
+    def display_add_object_memory_menu():
+        clear_terminal()
+        print("Czy chcesz dodać obiekt do historii?")
+        print("1. Dodaj do pamięci")
+        print("2. Usuń obiekt")
+        print("Podaj liczbę:   ", end="")   
+    
+    def add_to_history(self, operacja):
+        while (True):
+            HistoriaObiektow.display_add_object_memory_menu()
+            user_input = input()
+            if (user_input == "1"):
+                nazwa = self.create_name()
+                obiekt = operacja.get_result()
+                obiekt.set_name(nazwa)
+                self[nazwa] = obiekt
+                break
+            elif (user_input == "2"):
+                break
+            else:
+                invalid_input("Podano niepoprawne dane") 
         
-    def show_object(self, i):
+    def show_object(self, i, wait=True, mode="show_object"):
         object = self.slownik_nazwa_wartosc[self.lista_indeks_nazwa[i-1]]
         if not isinstance(object, Zbior):
             if not isinstance(object, Liczba) or isinstance(object, Stala) or isinstance(object, Zmienna):
                 print(repr(object))
             print(object)
-            user_input = input()
+            if wait:
+                user_input = input()
         else:
-            object.browse_set()
+            if mode != "return_object":
+                object.browse_set()
         
     def display_object_memory_menu():
         clear_terminal()
@@ -34,9 +58,10 @@ class HistoriaObiektow(Historia):
         print("4. Nowa stała")
         print("5. Nowa zmienna")
         print("6. Nowy zbior")
-        print("7. Edytuj wybrany obiekt")
+        print("7. Usuń wybrany obiekt")
         print("8. Przeglądaj zapisane obiekty matematyczne")
-        print("9. Menu Pamięci")
+        print("9. Edytuj wybrany obiekt")
+        print("10. Menu Pamięci")
         print("Podaj liczbę:   ", end="")
         
     def object_memory_menu(self):
@@ -56,10 +81,12 @@ class HistoriaObiektow(Historia):
             elif (user_input == "6"):
                 self.new_set()
             elif (user_input == "7"):
-                pass
+                self.browse_history("remove_object")
             elif (user_input == "8"):
-                self.browse_history()
+                self.browse_history("show_object")
             elif (user_input == "9"):
+                self.browse_history("return_object").modify()
+            elif (user_input == "10"):
                 break
             else:
                 invalid_input("Podano niepoprawne dane")

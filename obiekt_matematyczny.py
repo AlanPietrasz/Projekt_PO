@@ -7,6 +7,9 @@ class ObiektMatematyczny:
         
     def type_repr(self):
         return self.nazwa_typu
+
+    def set_name(self, nazwa):
+        self.nazwa = nazwa
         
     # def set_name(self, nazwa):
     #     if self.free_name(nazwa):

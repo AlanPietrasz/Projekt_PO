@@ -7,10 +7,19 @@ class Operacja:
         self.nazwa = nazwa
         self.lista_krokow = []
     
+    def set_name(self, nazwa):
+        self.nazwa = nazwa
+
+    def print_and_save(self, menu):
+        self.print_operation_steps()
+        menu.historia_operacji.add_to_history(self)
+        menu.historia_obiektow.add_to_history(self)   
+        
+    
     def type_repr(self):
         return self.nazwa_typu
     
-    def result(self):
+    def get_result(self):
         if self.result:
             return self.result
         else:

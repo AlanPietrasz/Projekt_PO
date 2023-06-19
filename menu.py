@@ -29,6 +29,9 @@ class Menu:
                                                                 [4, 0, 1]])
         self.historia_obiektow["exm1"] = Macierz(2, 3, "exm1", [[1, 2, 3],
                                                                 [0, 1, 2]])
+        self.historia_obiektow["exm3"] = Macierz(3, 5, "exm3", [[1, 2, 3, 4, 6],
+                                                                [1, 2, 3, 8, 7],
+                                                                [0, 1, 2, 3, 2]])
         self.historia_obiektow["exw1"] = Wektor(3, "exw1", [[1, 2, 3]])
         self.historia_obiektow["pi"] = Stala(3.14,"pi")
         self.historia_obiektow["2.5"] = Liczba(2.5)
@@ -56,6 +59,9 @@ class Menu:
         self.historia_operacji["mn1"] = Mnozenie("mn1",
                                                  self.historia_obiektow["id"],
                                                  self.historia_obiektow["exm2"])
+        self.historia_operacji["mn2"] = Mnozenie("mn2",
+                                                 self.historia_obiektow["exm1"],
+                                                 self.historia_obiektow["exm3"])
         
 
     def display_menu():
@@ -104,13 +110,16 @@ class Menu:
                     else:
                         invalid_input("Podano niepoprawne dane")
             elif (user_input == "2"):
-                pass
+                operacja = Dodawanie.enter_m_m(self.historia_obiektow)
+                operacja.print_and_save(self)
             elif (user_input == "3"):
-                pass
+                operacja = Odejmowanie.enter_m_m(self.historia_obiektow)
+                operacja.print_and_save(self)
             elif (user_input == "4"):
                 pass
             elif (user_input == "5"):
-                pass
+                operacja = Mnozenie.enter_m_m(self.historia_obiektow)
+                operacja.print_and_save(self)
             elif (user_input == "6"):
                 pass
             elif (user_input == "7"):

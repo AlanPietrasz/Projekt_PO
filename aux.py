@@ -6,9 +6,6 @@ import sys
 import tty
 import termios
 
-def get_length(element):
-    return len(element) if isinstance(element, str) else len(str(element))
-
 
 def clear_terminal():
     os.system('cls' if os.name == 'nt' else 'clear')

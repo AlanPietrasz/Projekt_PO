@@ -31,6 +31,15 @@ class Macierz(ObiektMatematyczny):
     def get_dimensions(self):
         return (self.m, self.n)
 
+    def eq_dimensions(self, m = 0, n = 0):
+        if m != 0:
+            if self.m != m:
+                return False
+        if n != 0:
+            if self.n != n:
+                return False
+        return True
+
     def __getitem__(self, indices):
         i, j = indices
         return self.macierz[i-1, j-1]
@@ -50,10 +59,8 @@ class Macierz(ObiektMatematyczny):
             for j in range(self.n):
                 self.macierz[i, j] = eval(self.macierz[i, j])
                 
-    # def eval_str(self):
-    #     for i in range(self.m):
-    #         for j in range(self.n):
-    #             self.macierz[i, j] = str(eval(self.macierz[i, j]))
+    def modify(self, is_wektor = False):
+        self.edit_matrix(self.m, self.n, is_wektor)
         
     def to_str(self, color_list=[], color=Fore.GREEN, color2=Fore.CYAN):
         res = ""
@@ -100,10 +107,12 @@ class Macierz(ObiektMatematyczny):
                 user_input = input()
                 clear_terminal()
     
-    def create_matrix(nazwa):
+    def create_matrix(nazwa="", m=0, n=0):
         clear_terminal()
-        m = Macierz.enter_matrix_size("Podaj liczbę wierszy")
-        n = Macierz.enter_matrix_size("Podaj liczbę kolumn")
+        if m == 0:
+            m = Macierz.enter_matrix_size("Podaj liczbę wierszy")
+        if n == 0:
+            n = Macierz.enter_matrix_size("Podaj liczbę kolumn")
         macierz = Macierz(m, n, nazwa)
         return Macierz.edit_matrix(macierz, m, n, is_wektor = False)
     

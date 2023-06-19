@@ -1,8 +1,10 @@
 
 import numpy as np
 
+from aux import clear_terminal
 from macierz import Macierz
 
+from operacja_unarna import OperacjaUnarna
 from operacja_binarna import OperacjaBinarna
 
 class Mnozenie(OperacjaBinarna):
@@ -14,6 +16,15 @@ class Mnozenie(OperacjaBinarna):
         self.m = self.wymiary1[0]
         self.n = self.wymiary1[1]
         self.k = self.wymiary2[1]
+
+    def enter_m_m(historia, nazwa = ""):
+        clear_terminal()
+        print("Podaj pierwszą macierz")
+        m1 = OperacjaUnarna.enter_matrix(historia)
+        clear_terminal()
+        print("Podaj drugą macierz")
+        m2 = OperacjaUnarna.enter_matrix(historia, m1.get_dimensions()[1])
+        return Mnozenie(nazwa, m1, m2)
         
     def run_operation(self):
         res_matrix = Macierz(self.m, self.k)

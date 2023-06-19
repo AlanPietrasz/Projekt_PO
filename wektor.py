@@ -16,6 +16,8 @@ class Wektor(Macierz):
         n = 1
         macierz = Wektor(m, nazwa)
         return Macierz.edit_matrix(macierz, m, n, is_wektor= True)
-        
+
+    def modify(self, is_wektor=True):
+        Macierz.modify(self, is_wektor)      
 
         
