@@ -33,7 +33,7 @@ class Zbior(ObiektMatematyczny, Historia):
         self.lista_indeks_nazwa.remove(nazwa)
         self.slownik_nazwa_wartosc.pop(nazwa)
         
-    def print_type_repr(obiekt):
+    def print_type_repr(self, obiekt):
         if isinstance(obiekt, Zmienna):
             return "Zmienna "
         elif isinstance(obiekt, Stala):
@@ -54,57 +54,59 @@ class Zbior(ObiektMatematyczny, Historia):
         print(object)
         user_input = input() 
         
-    def print_range(self, b, e, chosen=0, color=Fore.GREEN):
-        if b - e > Zbior.MAX_NUMBER_OF_SHOWED_ELEMS:
-            e = b + Zbior.MAX_NUMBER_OF_SHOWED_ELEMS
-        if e > self.set_len():
-            e = self.set_len()
-        clear_terminal()
-        print("---------ZBIÓR-----------")
-        print("Nazwa zbioru: ", self.nazwa)
-        max_len = len(str(e))
-        for i in range(b-1, e):
-            obiekt = self.slownik_nazwa_wartosc[self.lista_indeks_nazwa[i]]
-            print(f"{Fore.YELLOW}{i+1}: {Style.RESET_ALL}", end="")
-            print(" " * (max_len - len(str(i+1))), end="")
-            print(f"{Fore.CYAN}{Zbior.print_type_repr(obiekt)} {Style.RESET_ALL}", end="")
-            if i != chosen - 1: 
-                print(repr(obiekt))
-            else:
-                print(f"{color}{repr(obiekt)}{Style.RESET_ALL}")
+    def print_range(self, b, e, chosen=0, naglowek = "ZBIÓR", color=Fore.GREEN):
+        Historia.print_range(self, b, e, chosen, naglowek, color)
+        # if b - e > Zbior.MAX_NUMBER_OF_SHOWED_ELEMS:
+        #     e = b + Zbior.MAX_NUMBER_OF_SHOWED_ELEMS
+        # if e > self.set_len():
+        #     e = self.set_len()
+        # clear_terminal()
+        # print("---------ZBIÓR-----------")
+        # print("Nazwa zbioru: ", self.nazwa)
+        # max_len = len(str(e))
+        # for i in range(b-1, e):
+        #     obiekt = self.slownik_nazwa_wartosc[self.lista_indeks_nazwa[i]]
+        #     print(f"{Fore.YELLOW}{i+1}: {Style.RESET_ALL}", end="")
+        #     print(" " * (max_len - len(str(i+1))), end="")
+        #     print(f"{Fore.CYAN}{Zbior.print_type_repr(obiekt)} {Style.RESET_ALL}", end="")
+        #     if i != chosen - 1: 
+        #         print(repr(obiekt))
+        #     else:
+        #         print(f"{color}{repr(obiekt)}{Style.RESET_ALL}")
 
 
     def browse_set(self):
-        i = 1
-        chosen = 1
-        while True:
-            self.print_range(i, i + self.MAX_NUMBER_OF_SHOWED_ELEMS - 1, chosen)
-            print("Używaj ws, aby poruszać się po zbiorze")
-            print("Naciśnij ENTER jeśli chcesz zobaczyć wartość w wybranym polu")
-            print("Naciśnij q jeśli chcesz zakończyć przeglądanie zbioru")
-            user_input = get_char()
-            if user_input == "enter":
-                self.show_object(chosen)
-            elif user_input == "w":
-                if chosen - 1 < i:
-                    if i > 1:
-                        i -= 1
-                        chosen -= 1
-                else:
-                    chosen -= 1
+        Historia.browse_history(self)
+        # i = 1
+        # chosen = 1
+        # while True:
+        #     self.print_range(i, i + self.MAX_NUMBER_OF_SHOWED_ELEMS - 1, chosen)
+        #     print("Używaj ws, aby poruszać się po zbiorze")
+        #     print("Naciśnij ENTER jeśli chcesz zobaczyć wartość w wybranym polu")
+        #     print("Naciśnij q jeśli chcesz zakończyć przeglądanie zbioru")
+        #     user_input = get_char()
+        #     if user_input == "enter":
+        #         self.show_object(chosen)
+        #     elif user_input == "w":
+        #         if chosen - 1 < i:
+        #             if i > 1:
+        #                 i -= 1
+        #                 chosen -= 1
+        #         else:
+        #             chosen -= 1
 
-            elif user_input == "s":
-                if chosen + 1 > i + self.MAX_NUMBER_OF_SHOWED_ELEMS - 1:
-                    if i + self.MAX_NUMBER_OF_SHOWED_ELEMS - 1 < self.set_len():
-                        i += 1
-                        chosen += 1
-                else:
-                    chosen += 1
-            elif user_input == "q":
-                break
-            else:
-                print("Podano nieprawidłową wartość")
-                user_input = input()
+        #     elif user_input == "s":
+        #         if chosen + 1 > i + self.MAX_NUMBER_OF_SHOWED_ELEMS - 1:
+        #             if i + self.MAX_NUMBER_OF_SHOWED_ELEMS - 1 < self.set_len():
+        #                 i += 1
+        #                 chosen += 1
+        #         else:
+        #             chosen += 1
+        #     elif user_input == "q":
+        #         break
+        #     else:
+        #         print("Podano nieprawidłową wartość")
+        #         user_input = input()
         
     # def __setitem__(self, obiekt)
         
@@ -148,9 +150,7 @@ class Zbior(ObiektMatematyczny, Historia):
             elif (user_input == "6"):
                 pass
             elif (user_input == "7"):
-                # self.historia_obiektow.print_all()
                 self.browse_set()
-                # user_input = input()
             elif (user_input == "8"):
                 break
             else:
@@ -171,14 +171,12 @@ class Zbior(ObiektMatematyczny, Historia):
         while True:
             wartosc = ObiektMatematyczny.create_number_val()
             nazwa = str(wartosc)
-            if not ObiektMatematyczny.is_free_name(nazwa):
-                print("Podana liczba jest już zapisana")
-                user_input = input()
-                clear_terminal()
+            if nazwa in self.lista_indeks_nazwa:
+                invalid_input("Podana liczba jest już zapisana")
                 continue
             break
         nowy_obiekt = Liczba(wartosc)
-        self[repr(nowy_obiekt)] = nowy_obiekt       
+        self[repr(nowy_obiekt)] = nowy_obiekt  
         
     def new_constant(self):
         nazwa = ObiektMatematyczny.create_name()

@@ -21,9 +21,10 @@ class HistoriaObiektow(Historia):
             if not isinstance(object, Liczba) or isinstance(object, Stala) or isinstance(object, Zmienna):
                 print(repr(object))
             print(object)
+            user_input = input()
         else:
             object.browse_set()
-        user_input = input()
+        
     
     def print_type_repr(self, obiekt):
         if isinstance(obiekt, Zmienna):
@@ -94,10 +95,8 @@ class HistoriaObiektow(Historia):
         while True:
             wartosc = ObiektMatematyczny.create_number_val()
             nazwa = str(wartosc)
-            if not ObiektMatematyczny.is_free_name(nazwa):
-                print("Podana liczba jest już zapisana")
-                user_input = input()
-                clear_terminal()
+            if nazwa in self.lista_indeks_nazwa:
+                invalid_input("Podana liczba jest już zapisana")
                 continue
             break
         nowy_obiekt = Liczba(wartosc)

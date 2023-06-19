@@ -2,8 +2,6 @@
 from collections import defaultdict as dd
 from colorama import Fore, Style
 
-
-
 from aux import *
 
 class Historia:
@@ -11,7 +9,7 @@ class Historia:
 
     def __init__(self, slownik_nazwa_wartosc = dd()):
         self.lista_indeks_nazwa = list()
-        self.slownik_nazwa_wartosc = dd()
+        self.slownik_nazwa_wartosc = slownik_nazwa_wartosc
         
     def __setitem__(self, nazwa, wartosc, zbior = False):
         if nazwa in self.lista_indeks_nazwa:
@@ -39,13 +37,13 @@ class Historia:
     def get_val(self, nazwa):
         return self.slownik_nazwa_wartosc[nazwa]
     
-    def print_range(self, b, e, chosen=0, color=Fore.GREEN):
+    def print_range(self, b, e, chosen=0, naglowek = "HISTORIA", color=Fore.GREEN):
         if b - e > Historia.MAX_NUMBER_OF_SHOWED_ELEMS:
             e = b + Historia.MAX_NUMBER_OF_SHOWED_ELEMS
         if e > len(self.lista_indeks_nazwa):
             e = len(self.lista_indeks_nazwa)
         clear_terminal()
-        print("---------HISTORIA-----------")
+        print("---------", naglowek, "-----------")
         max_len = len(str(e))
         for i in range(b-1, e):
             obiekt = self.slownik_nazwa_wartosc[self.lista_indeks_nazwa[i]]
@@ -63,7 +61,7 @@ class Historia:
         i = 1
         chosen = 1
         while True:
-            self.print_range(i, i + self.MAX_NUMBER_OF_SHOWED_ELEMS, chosen)
+            self.print_range(i, i + self.MAX_NUMBER_OF_SHOWED_ELEMS - 1, chosen)
             print("Używaj ws, aby poruszać się po historii")
             print("Naciśnij ENTER jeśli chcesz zobaczyć wartość w wybranym polu")
             print("Naciśnij q jeśli chcesz zakończyć przeglądanie historii")
@@ -78,8 +76,8 @@ class Historia:
                 else:
                     chosen -= 1
             elif user_input == "s":
-                if chosen + 1 > i + self.MAX_NUMBER_OF_SHOWED_ELEMS:
-                    if i + self.MAX_NUMBER_OF_SHOWED_ELEMS < len(self.lista_indeks_nazwa):
+                if chosen + 1 > i + self.MAX_NUMBER_OF_SHOWED_ELEMS - 1:
+                    if i + self.MAX_NUMBER_OF_SHOWED_ELEMS - 1 < len(self.lista_indeks_nazwa):
                         i += 1
                         chosen += 1
                 else:
