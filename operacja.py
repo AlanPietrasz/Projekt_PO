@@ -6,7 +6,6 @@ class Operacja:
     def __init__(self, nazwa):
         self.nazwa = nazwa
         self.lista_krokow = []
-        # self.liczba_krokow = len(self.lista_krokow)
     
     def type_repr(self):
         return self.nazwa_typu

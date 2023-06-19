@@ -10,6 +10,7 @@ class Historia:
     def __init__(self, slownik_nazwa_wartosc = dd()):
         self.lista_indeks_nazwa = list()
         self.slownik_nazwa_wartosc = slownik_nazwa_wartosc
+        self.dlugosc_historii = lambda : len(self.lista_indeks_nazwa)
         
     def __setitem__(self, nazwa, wartosc, zbior = False):
         if nazwa in self.lista_indeks_nazwa:
@@ -54,8 +55,8 @@ class Historia:
     def print_range(self, b, e, chosen=0, naglowek = "HISTORIA", color=Fore.GREEN):
         if b - e > Historia.MAX_NUMBER_OF_SHOWED_ELEMS:
             e = b + Historia.MAX_NUMBER_OF_SHOWED_ELEMS
-        if e > len(self.lista_indeks_nazwa):
-            e = len(self.lista_indeks_nazwa)
+        if e > self.dlugosc_historii():
+            e = self.dlugosc_historii()
         clear_terminal()
         print("---------", naglowek, "-----------")
         max_len = len(str(e))
@@ -91,8 +92,9 @@ class Historia:
                 else:
                     chosen -= 1
             elif user_input == "s":
+                #user_input = input()
                 if chosen + 1 > i + self.MAX_NUMBER_OF_SHOWED_ELEMS - 1:
-                    if i + self.MAX_NUMBER_OF_SHOWED_ELEMS - 1 < len(self.lista_indeks_nazwa):
+                    if i + self.MAX_NUMBER_OF_SHOWED_ELEMS - 1 < self.dlugosc_historii(): #len(self.lista_indeks_nazwa):
                         i += 1
                         chosen += 1
                 else:
@@ -103,7 +105,7 @@ class Historia:
                 invalid_input("Podano nieprawidłową wartość")       
             
     def print_all(self):
-        Historia.print_range(self, 1, self.dlugosc_historii)
+        Historia.print_range(self, 1, self.dlugosc_historii())
         
     def display_memory_menu():
         clear_terminal()

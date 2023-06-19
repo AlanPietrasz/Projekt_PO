@@ -24,20 +24,6 @@ class HistoriaObiektow(Historia):
             user_input = input()
         else:
             object.browse_set()
-
-    # def print_type_repr(self, obiekt):
-    #     if isinstance(obiekt, Zmienna):
-    #         return "Zmienna "
-    #     elif isinstance(obiekt, Stala):
-    #         return "Stała   "
-    #     elif isinstance(obiekt, Liczba):
-    #         return "Liczba  "
-    #     elif isinstance(obiekt, Zbior):
-    #         return "Zbiór   "       
-    #     elif isinstance(obiekt, Wektor):
-    #         return "Wektor  "  
-    #     elif isinstance(obiekt, Macierz):
-    #         return "Macierz "  
         
     def display_object_memory_menu():
         clear_terminal()
@@ -72,9 +58,7 @@ class HistoriaObiektow(Historia):
             elif (user_input == "7"):
                 pass
             elif (user_input == "8"):
-                # self.historia_obiektow.print_all()
                 self.browse_history()
-                # user_input = input()
             elif (user_input == "9"):
                 break
             else:

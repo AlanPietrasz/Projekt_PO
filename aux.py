@@ -1,9 +1,13 @@
 import os
+import numpy as np
 
 import platform
 import sys
 import tty
 import termios
+
+def get_length(element):
+    return len(element) if isinstance(element, str) else len(str(element))
 
 
 def clear_terminal():

@@ -15,6 +15,7 @@ from historia_operacji import HistoriaOperacji
 
 from dodawanie import Dodawanie
 from odejmowanie import Odejmowanie
+from mnozenie import Mnozenie
 
 class Menu:
     def __init__(self):
@@ -52,6 +53,9 @@ class Menu:
         self.historia_operacji["od1"] = Odejmowanie("od1",
                                                     self.historia_obiektow["id"],
                                                     self.historia_obiektow["exm2"])
+        self.historia_operacji["mn1"] = Mnozenie("mn1",
+                                                 self.historia_obiektow["id"],
+                                                 self.historia_obiektow["exm2"])
         
 
     def display_menu():

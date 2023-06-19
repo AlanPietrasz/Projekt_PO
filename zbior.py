@@ -15,7 +15,6 @@ class Zbior(ObiektMatematyczny, Historia):
     MAX_NUMBER_OF_SHOWED_ELEMS = 10
     MAX_SET_LEN = 20
     
-    
     def __init__(self, nazwa, slownik_nazwa_wartosc = dd()):
         self.nazwa = nazwa
         Historia.__init__(self, slownik_nazwa_wartosc)
@@ -28,20 +27,6 @@ class Zbior(ObiektMatematyczny, Historia):
         
     # def __getitem__(self, nazwa):
     #     Historia.__getitem__(self, nazwa)
-        
-    # def type_repr(self, obiekt):
-    #     if isinstance(obiekt, Zmienna):
-    #         return "Zmienna "
-    #     elif isinstance(obiekt, Stala):
-    #         return "Stała   "
-    #     elif isinstance(obiekt, Liczba):
-    #         return "Liczba  "
-    #     elif isinstance(obiekt, Zbior):
-    #         return "Zbiór   "
-    #     elif isinstance(obiekt, Wektor):
-    #         return "Wektor  "
-    #     elif isinstance(obiekt, Macierz):
-    #         return "Macierz "
     
     def show_object(self, i):
         object = self.slownik_nazwa_wartosc[self.lista_indeks_nazwa[i-1]]
@@ -53,9 +38,8 @@ class Zbior(ObiektMatematyczny, Historia):
     def print_range(self, b, e, chosen=0, naglowek = "ZBIÓR", color=Fore.GREEN):
         Historia.print_range(self, b, e, chosen, naglowek, color)
 
-
     def browse_set(self):
-        Historia.browse_history(self)
+        self.browse_history()
         
     # def __setitem__(self, obiekt)
         
@@ -78,9 +62,6 @@ class Zbior(ObiektMatematyczny, Historia):
         zbior = Zbior(nazwa)
         zbior.set_menu()
         return zbior
-    
-
-
 
     def set_menu(self):
         while True:

@@ -8,26 +8,11 @@ from dodawanie import Dodawanie
 class HistoriaOperacji(Historia):
     def __init__(self):
         Historia.__init__(self)
-        
-    # def type_repr(self, obiekt):
-    #     return obiekt.nazwa_typu
-        # if isinstance(obiekt, Dodawanie):
-        #     return "Zmienna "
-        # elif isinstance(obiekt, Stala):
-        #     return "Stała   "
-        # elif isinstance(obiekt, Liczba):
-        #     return "Liczba  "
-        # elif isinstance(obiekt, Zbior):
-        #     return "Zbiór   "       
-        # elif isinstance(obiekt, Wektor):
-        #     return "Wektor  "  
-        # elif isinstance(obiekt, Macierz):
-        #     return "Macierz "  
     
     def display_operation_memory_menu():
         clear_terminal()
         print("------------HISTORIA-OPERACJI---------------")
-        print("1. Przeglądaj zapisane obiekty matematyczne")
+        print("1. Przeglądaj zapisane operacje")
         print("2. Menu Pamięci")
         print("Podaj liczbę:   ", end="")   
     

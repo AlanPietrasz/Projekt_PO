@@ -1,4 +1,5 @@
 
+from colorama import Fore
 import numpy as np
 
 from macierz import Macierz
@@ -14,20 +15,19 @@ class Dodawanie(OperacjaBinarna):
         self.m = self.wymiary1[0]
         self.n = self.wymiary1[1]
         
+    def str_m_op_m_eq_m(self, other, other2, operator="+", color_list1=[], color_list2=[], color_list3=[], color=Fore.GREEN, color2=Fore.CYAN):
+        return super().str_m_op_m_eq_m(other, other2, operator, color_list1, color_list2, color_list3, color, color2)
+        
     def run_operation(self):
         my_list = [[] for _ in range(self.m)]
-        self.lista_krokow.append(self.m1.to_str2(self.m2, "+")) 
         for i in range(self.m):
             for j in range(self.n):
-                print(my_list)
                 my_list[i].append(str(self.m1[i+1, j+1]) + "+" + str(self.m2[i+1, j+1]))
 
         t1 = np.array(my_list, dtype=np.str_)
         step1 = Macierz(self.m, self.n, "", t1)
-        self.lista_krokow.append(str(step1))
-        step1.eval()
-        print(step1)
-        self.lista_krokow.append(str(step1))
-        self.result = step1
         
-    
+        self.lista_krokow.append(OperacjaBinarna.str_m_op_m_eq_m(self.m1, self.m2, step1))
+        step1.eval()
+        self.lista_krokow.append(OperacjaBinarna.str_m_op_m_eq_m(self.m1, self.m2, step1))
+        self.result = step1

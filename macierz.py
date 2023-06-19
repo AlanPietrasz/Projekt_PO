@@ -16,7 +16,7 @@ class Macierz(ObiektMatematyczny):
         self.n = n
 
         if tab == []:
-            tab = np.zeros((m, n))
+            tab = np.zeros((m, n), dtype=object)
         self.macierz = np.reshape(tab, (m, n))
         if nazwa == "":
             self.has_a_name = False
@@ -38,24 +38,22 @@ class Macierz(ObiektMatematyczny):
     def __setitem__(self, indices, value):
         i, j = indices
         self.macierz[i-1, j-1] = value
-        if not self.has_a_name:
-            self.set_name(repr(self.macierz))
         
     def __repr__(self):
         return self.nazwa
     
     def __str__(self):
         return self.to_str()
-        # return str(self.macierz)
-        
-    # def __str__(self, other):
-    #     return self.to_str2(other)
-    #     # return str(self.macierz)
     
     def eval(self):
         for i in range(self.m):
             for j in range(self.n):
                 self.macierz[i, j] = eval(self.macierz[i, j])
+                
+    # def eval_str(self):
+    #     for i in range(self.m):
+    #         for j in range(self.n):
+    #             self.macierz[i, j] = str(eval(self.macierz[i, j]))
         
     def to_str(self, color_list=[], color=Fore.GREEN, color2=Fore.CYAN):
         res = ""
@@ -78,59 +76,12 @@ class Macierz(ObiektMatematyczny):
                     res += str(arr[i, j]).rjust(max_width) + " "
             res += "\n"
         return res
-    
-    def to_str2(self, other, operator="o", color_list1=[], color_list2=[], color=Fore.GREEN, color2=Fore.CYAN):
-        res = ""
-        arr = self.macierz
-        arr2 = other.macierz
-        max_width = np.vectorize(lambda x: len(str(x)))(arr).max()
-        max_width2 = np.vectorize(lambda x: len(str(x)))(arr2).max()
-        n_len = len(str(self.n))
-        m_len = len(str(self.m))
-        n2_len = len(str(other.n))
-        m2_len = len(str(other.m))
-        res += " " * (2 + n_len)
-        for j in range(arr.shape[1]):
-            res += " " * (max_width - len(str(j)))
-            res += f"{color2}{j+1}:{Style.RESET_ALL}"
-        res += " " * 3
-        res += " " * (2 + n2_len)
-        for j in range(arr2.shape[1]):
-            res += " " * (max_width2 - len(str(j)))
-            res += f"{color2}{j+1}:{Style.RESET_ALL}"
-        res += "\n"
-        
-        for i in range(arr.shape[0]):
-            res += f"{color2}{i+1}:{Style.RESET_ALL} "
-            res += " " * (m_len - (len(str(i+1))))
-            for j in range(arr.shape[1]):
-                if (i + 1, j + 1) in color_list1:
-                    res += f"{color}{str(arr[i, j]).rjust(max_width)}{Style.RESET_ALL} "
-                else:
-                    res += str(arr[i, j]).rjust(max_width) + " "
-            
-            # res += " "
-            # if i == int(self.m_len / 2):
-            #     res += operator
-            # else:
-            #     res += " "
-            # res += " "
-            res += f" {operator if i == int(self.m / 2) else ' '} "
-            
-            res += f"{color2}{i+1}:{Style.RESET_ALL} "
-            res += " " * (m2_len - (len(str(i+1))))
-            for j in range(arr2.shape[1]):
-                if (i + 1, j + 1) in color_list2:
-                    res += f"{color}{str(arr2[i, j]).rjust(max_width2)}{Style.RESET_ALL} "
-                else:
-                    res += str(arr2[i, j]).rjust(max_width2) + " "
-                    
-            res += "\n"
-        return res
         
     def print(self, color_list = [], color=Fore.GREEN, color2=Fore.CYAN):
         print(self.to_str(color_list, color, color2))
 
+    def print_np(self):
+        print(self.macierz)
 
     def enter_matrix_size(message):
         while True:
