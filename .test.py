@@ -100,8 +100,6 @@ for i in range(-2, 2):
     print(i,": ", end="")
     print(str(i).isdigit())
     
-print()
-    
 for i in range(-2, 2):
     print(i,": ", end="")
     print(str(i).isnumeric())
@@ -124,19 +122,23 @@ for i in range(-2, 2):
     
 print()
     
-for i in range(-2, 2):
-    print(i,": ", end="")
-    print(str(i+0.5).isnumeric())
+# for i in range(-2, 2):
+#     print(i,": ", end="")
+#     print(str(i+0.5).isnumeric())
 
 for i in range(-2, 2):
     print(i,": ", end="")
     print(str(i+0.5).isdecimal())
     
-for i in range(-2, 2):
-    print(i,": ", end="")
-    print(str(i+0.5).isalnum())
+# for i in range(-2, 2):
+#     print(i,": ", end="")
+#     print(str(i+0.5).isalnum())
     
 #print(int("-10.3"))
 
         
 print(set(range(1, 10)))
+
+print("3a".isdecimal())
+
+print("3a".isdigit())

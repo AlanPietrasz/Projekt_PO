@@ -18,7 +18,6 @@ class Zbior(ObiektMatematyczny, Historia):
         self.nazwa = nazwa
         Historia.__init__(self, slownik_nazwa_wartosc)
         
-        
     def __setitem__(self, nazwa, obiekt):
         if len(self.lista_indeks_nazwa) >= Zbior.MAX_SET_LEN:
             raise ValueError("Osiągnięto maksymalną liczbę obiektów matematycznych w danym zbiorze")

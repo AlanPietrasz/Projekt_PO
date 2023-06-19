@@ -100,7 +100,7 @@ class HistoriaObiektow(Historia):
                 continue
             break
         nowy_obiekt = Liczba(wartosc)
-        self[repr(nowy_obiekt)] = nowy_obiekt       
+        self[repr(nowy_obiekt)] = nowy_obiekt
         
     def new_constant(self):
         nazwa = self.create_name()

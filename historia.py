@@ -25,14 +25,24 @@ class Historia:
             if user_input == "":
                 invalid_input("Podano nieprawidłową nazwę")
                 continue
-            if user_input in self.lista_indeks_nazwa:
-                invalid_input("Obiekt matematyczny o danej nazwie już istnieje")
+            try:
+                user_input = int(user_input)
+                invalid_input("Podano nieprawidłową nazwę")
                 continue
-            return user_input
+            except:
+                if user_input in self.lista_indeks_nazwa:
+                    invalid_input("Obiekt matematyczny o danej nazwie już istnieje")
+                    continue
+                return user_input
         
-    def __getitem__(self, ind):
+    def __getitem__(self, nazwa_ind):
+        if nazwa_ind in self.lista_indeks_nazwa:
+            return self.slownik_nazwa_wartosc[nazwa_ind]
+        try:
+            ind = int(nazwa_ind)
+        except:
+            invalid_input("Obiekt o danej nazwie nie istnieje")
         return Historia.get_val(self.lista_indeks_nazwa[ind-1])
-
 
     def get_val(self, nazwa):
         return self.slownik_nazwa_wartosc[nazwa]
@@ -54,8 +64,6 @@ class Historia:
                 print(repr(obiekt))
             else:
                 print(f"{color}{repr(obiekt)}{Style.RESET_ALL}")
-
-
 
     def browse_history(self):
         i = 1
