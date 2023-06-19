@@ -90,7 +90,12 @@ class Historia:
                     if res != None:
                         return res
                 elif mode == "remove_object":
-                    self.delete_menu(chosen)
+                    if self.dlugosc_historii() > 0:
+                        self.delete_menu(chosen)
+                        if chosen > self.dlugosc_historii():
+                            chosen -= 1
+                    else:
+                        invalid_input("Historia jest pusta")
             elif user_input == "w":
                 if chosen - 1 < i:
                     if i > 1:
@@ -142,7 +147,7 @@ class Historia:
             Historia.delete_object_memory_menu()
             user_input = input()
             if (user_input == "1"):
-                self.remove(self.lista_indeks_nazwa[chosen])
+                self.remove(self.lista_indeks_nazwa[chosen-1])
                 break
             elif (user_input == "2"):
                 break

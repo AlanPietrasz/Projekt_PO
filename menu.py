@@ -53,12 +53,12 @@ class Menu:
         self.historia_operacji["dod1"] = Dodawanie("dod1",
                                                    self.historia_obiektow["id"],
                                                    self.historia_obiektow["exm2"])
-        self.historia_operacji["od1"] = Odejmowanie("od1",
-                                                    self.historia_obiektow["id"],
-                                                    self.historia_obiektow["exm2"])
-        self.historia_operacji["mn1"] = Mnozenie("mn1",
-                                                 self.historia_obiektow["id"],
-                                                 self.historia_obiektow["exm2"])
+        # self.historia_operacji["od1"] = Odejmowanie("od1",
+        #                                             self.historia_obiektow["id"],
+        #                                             self.historia_obiektow["exm2"])
+        # self.historia_operacji["mn1"] = Mnozenie("mn1",
+        #                                          self.historia_obiektow["id"],
+        #                                          self.historia_obiektow["exm2"])
         self.historia_operacji["mn2"] = Mnozenie("mn2",
                                                  self.historia_obiektow["exm1"],
                                                  self.historia_obiektow["exm3"])
