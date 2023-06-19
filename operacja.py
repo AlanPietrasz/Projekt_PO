@@ -6,20 +6,28 @@ class Operacja:
     def __init__(self, nazwa):
         self.nazwa = nazwa
         self.lista_krokow = []
-        self.liczba_krokow = len(self.lista_krokow)
+        # self.liczba_krokow = len(self.lista_krokow)
+    
+    def type_repr(self):
+        return self.nazwa_typu
+    
+    def result(self):
+        if self.result:
+            return self.result
+        else:
+            self.run_operation()
+            return self.result
+    
+    def __repr__(self):
+        return self.nazwa
         
-    def update_liczba_krokow(self):
-        self.liczba_krokow = len(self.lista_krokow)
-        
-        
-       
     def print_operation_steps(self):
         if self.lista_krokow == []:
             self.run_operation()
         i = 0
         while True:
             clear_terminal()
-            print(self.nazwa_operacji, ": ")
+            print(self.nazwa_typu, ": ")
             print("Krok: ", i+1)
             print(self.lista_krokow[i])
             print("Używaj ad, aby poruszać się po krokach operacji")
@@ -30,7 +38,7 @@ class Operacja:
                 if i > 0:
                     i -= 1
             elif user_input == "d":
-                if i < self.liczba_krokow -1:
+                if i < len(self.lista_krokow) -1:
                     i += 1
             elif user_input == "q":
                 break

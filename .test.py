@@ -142,3 +142,14 @@ print(set(range(1, 10)))
 print("3a".isdecimal())
 
 print("3a".isdigit())
+
+import numpy as np
+
+# Przykładowe macierze
+matrix1 = np.array([[1, 2, 3], [4, 5, 6]])
+matrix2 = np.array([[7, 8, 9], [10, 11, 12]])
+
+# Wyświetlanie macierzy obok siebie
+print("Matrix 1:\t\tMatrix 2:")
+for row1, row2 in zip(matrix1, matrix2):
+    print('\t'.join([str(element) for element in row1]) + "\t\t" + '\t'.join([str(element) for element in row2]))

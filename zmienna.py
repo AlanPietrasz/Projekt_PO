@@ -3,6 +3,7 @@ from obiekt_matematyczny import ObiektMatematyczny
 from liczba import Liczba
 
 class Zmienna(Liczba):
+    nazwa_typu = "ZMIENNA"
     slownik_wartosci = dict()
     
     def __init__(self, wartosc, nazwa):

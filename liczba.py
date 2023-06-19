@@ -4,6 +4,8 @@ from obiekt_matematyczny import ObiektMatematyczny
 
 
 class Liczba(ObiektMatematyczny):
+    nazwa_typu = "LICZBA"
+    
     def __init__(self, wartosc):
         self.nazwa = str(wartosc)
         self.wartosc = wartosc

@@ -5,6 +5,9 @@ class ObiektMatematyczny:
     def __init__(self, nazwa):
         self.nazwa = nazwa
         
+    def type_repr(self):
+        return self.nazwa_typu
+        
     # def set_name(self, nazwa):
     #     if self.free_name(nazwa):
     #         raise ValueError("Obiekt matematyczny o danej nazwie już istnieje")

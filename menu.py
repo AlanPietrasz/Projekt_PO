@@ -14,6 +14,7 @@ from historia_obiektow import HistoriaObiektow
 from historia_operacji import HistoriaOperacji
 
 from dodawanie import Dodawanie
+from odejmowanie import Odejmowanie
 
 class Menu:
     def __init__(self):
@@ -44,6 +45,13 @@ class Menu:
         self.historia_obiektow["zbior1"] = zbior1
         for i in range(10):
             self.historia_obiektow[str(i)] = Liczba(i)
+            
+        self.historia_operacji["dod1"] = Dodawanie("dod1",
+                                                   self.historia_obiektow["id"],
+                                                   self.historia_obiektow["exm2"])
+        self.historia_operacji["od1"] = Odejmowanie("od1",
+                                                    self.historia_obiektow["id"],
+                                                    self.historia_obiektow["exm2"])
         
 
     def display_menu():
@@ -86,10 +94,7 @@ class Menu:
                     if (user_input == "1"):
                         self.historia_obiektow.object_memory_menu()
                     elif (user_input == "2"):
-                        """
-                        TODO
-                        """
-                        pass
+                        self.historia_operacji.operation_memory_menu()
                     elif (user_input == "3"):
                         break
                     else:

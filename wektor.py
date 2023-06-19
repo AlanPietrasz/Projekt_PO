@@ -5,6 +5,8 @@ from obiekt_matematyczny import ObiektMatematyczny
 from macierz import Macierz
 
 class Wektor(Macierz):
+    nazwa_typu = "WEKTOR"
+    
     def __init__(self, m, nazwa="", tab=[]):
         super().__init__(m, 1, nazwa, tab)
         

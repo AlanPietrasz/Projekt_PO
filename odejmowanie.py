@@ -5,8 +5,8 @@ from macierz import Macierz
 
 from operacja_binarna import OperacjaBinarna
 
-class Dodawanie(OperacjaBinarna):
-    nazwa_typu = "DODAWANIE"
+class Odejmowanie(OperacjaBinarna):
+    nazwa_typu = "ODEJMOWANIE"
     def __init__(self, nazwa, m1, m2):
         OperacjaBinarna.__init__(self, nazwa, m1, m2)
         if self.wymiary1 != self.wymiary2:
@@ -16,11 +16,11 @@ class Dodawanie(OperacjaBinarna):
         
     def run_operation(self):
         my_list = [[] for _ in range(self.m)]
-        self.lista_krokow.append(self.m1.to_str2(self.m2, "+")) 
+        self.lista_krokow.append(self.m1.to_str2(self.m2, "-")) 
         for i in range(self.m):
             for j in range(self.n):
                 print(my_list)
-                my_list[i].append(str(self.m1[i+1, j+1]) + "+" + str(self.m2[i+1, j+1]))
+                my_list[i].append(str(self.m1[i+1, j+1]) + "-" + str(self.m2[i+1, j+1]))
 
         t1 = np.array(my_list, dtype=np.str_)
         step1 = Macierz(self.m, self.n, "", t1)

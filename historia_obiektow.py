@@ -24,21 +24,20 @@ class HistoriaObiektow(Historia):
             user_input = input()
         else:
             object.browse_set()
-        
-    
-    def print_type_repr(self, obiekt):
-        if isinstance(obiekt, Zmienna):
-            return "Zmienna "
-        elif isinstance(obiekt, Stala):
-            return "Stała   "
-        elif isinstance(obiekt, Liczba):
-            return "Liczba  "
-        elif isinstance(obiekt, Zbior):
-            return "Zbiór   "       
-        elif isinstance(obiekt, Wektor):
-            return "Wektor  "  
-        elif isinstance(obiekt, Macierz):
-            return "Macierz "  
+
+    # def print_type_repr(self, obiekt):
+    #     if isinstance(obiekt, Zmienna):
+    #         return "Zmienna "
+    #     elif isinstance(obiekt, Stala):
+    #         return "Stała   "
+    #     elif isinstance(obiekt, Liczba):
+    #         return "Liczba  "
+    #     elif isinstance(obiekt, Zbior):
+    #         return "Zbiór   "       
+    #     elif isinstance(obiekt, Wektor):
+    #         return "Wektor  "  
+    #     elif isinstance(obiekt, Macierz):
+    #         return "Macierz "  
         
     def display_object_memory_menu():
         clear_terminal()
@@ -79,7 +78,7 @@ class HistoriaObiektow(Historia):
             elif (user_input == "9"):
                 break
             else:
-                invalid_input("Podano niepoprawne dane")        
+                invalid_input("Podano niepoprawne dane")
      
     def new_matrix(self):
         nazwa = self.create_name()
@@ -89,7 +88,7 @@ class HistoriaObiektow(Historia):
     def new_vector(self):
         nazwa = self.create_name()
         nowy_obiekt = Wektor.create_wektor(nazwa)
-        self[repr(nowy_obiekt)] = nowy_obiekt       
+        self[repr(nowy_obiekt)] = nowy_obiekt
         
     def new_number(self):
         while True:

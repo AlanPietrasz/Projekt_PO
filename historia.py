@@ -42,7 +42,11 @@ class Historia:
             ind = int(nazwa_ind)
         except:
             invalid_input("Obiekt o danej nazwie nie istnieje")
-        return Historia.get_val(self.lista_indeks_nazwa[ind-1])
+        return self.get_val(self.lista_indeks_nazwa[ind-1])
+    
+    def remove(self, nazwa):
+        self.lista_indeks_nazwa.remove(nazwa)
+        self.slownik_nazwa_wartosc.pop(nazwa)
 
     def get_val(self, nazwa):
         return self.slownik_nazwa_wartosc[nazwa]
@@ -55,11 +59,14 @@ class Historia:
         clear_terminal()
         print("---------", naglowek, "-----------")
         max_len = len(str(e))
+        max_len_type_repr = len(max([obiekt.type_repr() for obiekt 
+                                 in self.slownik_nazwa_wartosc.values()], key=len))
         for i in range(b-1, e):
             obiekt = self.slownik_nazwa_wartosc[self.lista_indeks_nazwa[i]]
             print(f"{Fore.YELLOW}{i+1}: {Style.RESET_ALL}", end="")
             print(" " * (max_len - len(str(i+1))), end="")
-            print(f"{Fore.CYAN}{self.print_type_repr(obiekt)} {Style.RESET_ALL}", end="")
+            print(f"{Fore.CYAN}{obiekt.type_repr()} {Style.RESET_ALL}", end="")
+            print(" " * (max_len_type_repr - len(obiekt.type_repr())), end="")
             if i != chosen - 1: 
                 print(repr(obiekt))
             else:
