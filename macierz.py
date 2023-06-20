@@ -24,6 +24,13 @@ class Macierz(ObiektMatematyczny):
         else:
             self.has_a_name = True
             self.nazwa = nazwa
+            
+    def copy(self, dtype=object):
+        nowy_obiekt = Macierz(self.m, self.n)
+        for i in range(1, self.m+1):
+            for j in range(1, self.n+1):
+                nowy_obiekt[i, j] = self[i, j]
+        return nowy_obiekt
         
     def get_value(self):
         return self.macierz    
@@ -79,6 +86,30 @@ class Macierz(ObiektMatematyczny):
             for j in range(arr.shape[1]):
                 if (i + 1, j + 1) in color_list:
                     res += f"{color}{str(arr[i, j]).rjust(max_width)}{Style.RESET_ALL} "
+                else:
+                    res += str(arr[i, j]).rjust(max_width) + " "
+            res += "\n"
+        return res
+    
+    def to_str_2_col(self, color_list=[], color3_list = [], color=Fore.GREEN, color2=Fore.CYAN, color3=Fore.MAGENTA):
+        res = ""
+        arr = self.macierz
+        max_width = np.vectorize(lambda x: len(str(x)))(arr).max()
+        n_len = len(str(self.n))
+        m_len = len(str(self.m))
+        res += " " * (2 + n_len)
+        for j in range(arr.shape[1]):
+            res += " " * (max_width - len(str(j)))
+            res += f"{color2}{j+1}:{Style.RESET_ALL}"
+        res += "\n"
+        for i in range(arr.shape[0]):
+            res += f"{color2}{i+1}:{Style.RESET_ALL} "
+            res += " " * (m_len - (len(str(i+1))))
+            for j in range(arr.shape[1]):
+                if (i + 1, j + 1) in color_list:
+                    res += f"{color}{str(arr[i, j]).rjust(max_width)}{Style.RESET_ALL} "
+                elif (i + 1, j + 1) in color3_list:
+                    res += f"{color3}{str(arr[i, j]).rjust(max_width)}{Style.RESET_ALL} "
                 else:
                     res += str(arr[i, j]).rjust(max_width) + " "
             res += "\n"

@@ -16,6 +16,7 @@ from historia_operacji import HistoriaOperacji
 from dodawanie import Dodawanie
 from odejmowanie import Odejmowanie
 from mnozenie import Mnozenie
+from eliminacja_gaussa import EliminacjaGaussa
 
 class Menu:
     def __init__(self):
@@ -53,16 +54,23 @@ class Menu:
         self.historia_operacji["dod1"] = Dodawanie("dod1",
                                                    self.historia_obiektow["id"],
                                                    self.historia_obiektow["exm2"])
-        # self.historia_operacji["od1"] = Odejmowanie("od1",
-        #                                             self.historia_obiektow["id"],
-        #                                             self.historia_obiektow["exm2"])
-        # self.historia_operacji["mn1"] = Mnozenie("mn1",
-        #                                          self.historia_obiektow["id"],
-        #                                          self.historia_obiektow["exm2"])
+        self.historia_operacji["od1"] = Odejmowanie("od1",
+                                                    self.historia_obiektow["id"],
+                                                    self.historia_obiektow["exm2"])
+        self.historia_operacji["mn1"] = Mnozenie("mn1",
+                                                 self.historia_obiektow["id"],
+                                                 self.historia_obiektow["exm2"])
         self.historia_operacji["mn2"] = Mnozenie("mn2",
                                                  self.historia_obiektow["exm1"],
                                                  self.historia_obiektow["exm3"])
-        
+        self.historia_operacji["eg1"] = EliminacjaGaussa("eg1",
+                                                        self.historia_obiektow["id"])
+        self.historia_operacji["eg2"] = EliminacjaGaussa("eg2",
+                                                        self.historia_obiektow["exm3"])
+        self.historia_operacji["eg3"] = EliminacjaGaussa("eg3",
+                                                        self.historia_obiektow["exm2"])
+        self.historia_operacji["eg4"] = EliminacjaGaussa("eg4",
+                                                        self.historia_obiektow["exm1"])
 
     def display_menu():
         clear_terminal()
@@ -121,7 +129,8 @@ class Menu:
                 operacja = Mnozenie.enter_m_m(self.historia_obiektow)
                 operacja.print_and_save(self)
             elif (user_input == "6"):
-                pass
+                operacja = EliminacjaGaussa.enter_m(self.historia_obiektow)
+                operacja.print_and_save(self)
             elif (user_input == "7"):
                 pass
             elif (user_input == "8"):
