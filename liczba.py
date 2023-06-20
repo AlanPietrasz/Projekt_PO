@@ -1,5 +1,5 @@
 
-from aux import clear_terminal
+from aux import clear_terminal, invalid_input
 from obiekt_matematyczny import ObiektMatematyczny 
 
 
@@ -15,4 +15,7 @@ class Liczba(ObiektMatematyczny):
     
     def __str__(self):
         return str(self.get_value())
+    
+    def modify(self):
+        invalid_input("Nie można modyfikować obiektu Liczba")
     

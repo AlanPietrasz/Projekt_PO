@@ -153,3 +153,21 @@ matrix2 = np.array([[7, 8, 9], [10, 11, 12]])
 print("Matrix 1:\t\tMatrix 2:")
 for row1, row2 in zip(matrix1, matrix2):
     print('\t'.join([str(element) for element in row1]) + "\t\t" + '\t'.join([str(element) for element in row2]))
+
+
+import math
+
+def shift_decimal_point(number):
+    abs_number = abs(number)
+    power = math.ceil(math.log10(abs_number)) - 1
+    shifted_number = number * 10**(-power)
+    return shifted_number
+
+# Przykłady użycia
+x = 123.45
+shifted_x = shift_decimal_point(x)
+print(shifted_x)  # Output: 1.2345
+
+y = 0.012345
+shifted_y = shift_decimal_point(y)
+print(shifted_y)  # Output: 1.2345

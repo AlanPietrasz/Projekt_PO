@@ -27,10 +27,13 @@ class HistoriaObiektow(Historia):
             HistoriaObiektow.display_add_object_memory_menu()
             user_input = input()
             if (user_input == "1"):
-                nazwa = self.create_name()
                 obiekt = operacja.get_result()
-                obiekt.set_name(nazwa)
-                self[nazwa] = obiekt
+                if not isinstance(obiekt, Liczba):
+                    nazwa = self.create_name()
+                    obiekt.set_name(nazwa)
+                    self[nazwa] = obiekt
+                else:
+                    self[str(obiekt)] = obiekt
                 break
             elif (user_input == "2"):
                 break
@@ -85,7 +88,9 @@ class HistoriaObiektow(Historia):
             elif (user_input == "8"):
                 self.browse_history("show_object")
             elif (user_input == "9"):
-                self.browse_history("return_object").modify()
+                object_to_mod = self.browse_history("return_object")
+                if object_to_mod != None:
+                    object_to_mod.modify()
             elif (user_input == "10"):
                 break
             else:

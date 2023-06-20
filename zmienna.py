@@ -4,18 +4,20 @@ from liczba import Liczba
 
 class Zmienna(Liczba):
     nazwa_typu = "ZMIENNA"
-    slownik_wartosci = dict()
     
     def __init__(self, wartosc, nazwa):
         self.nazwa = nazwa
-        self.slownik_wartosci[self.nazwa] = wartosc
+        self.wartosc = wartosc
       
     def get_value(self):
-        return self.slownik_wartosci[self.nazwa]
+        return self.wartosc
     
     def set_value(self, wartosc):
-        self.slownik_wartosci[self.nazwa] = wartosc
+        self.wartosc = wartosc
         
     def __str__(self):
         return str(self.get_value())
+    
+    def modify(self):
+        self.set_value(ObiektMatematyczny.create_number_val())
     

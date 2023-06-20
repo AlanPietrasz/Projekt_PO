@@ -1,20 +1,22 @@
-
+from aux import invalid_input
 
 from obiekt_matematyczny import ObiektMatematyczny
 from liczba import Liczba
 
 class Stala(Liczba):
     nazwa_typu = "STAŁA"
-    slownik_wartosci = dict()
     
     
     def __init__(self, wartosc, nazwa):
         self.nazwa = nazwa
-        self.slownik_wartosci[self.nazwa] = wartosc
+        self.wartosc = wartosc
         
     def get_value(self):
-        return self.slownik_wartosci[self.nazwa]
+        return self.wartosc
     
     def __str__(self):
         return str(self.get_value())
+    
+    def modify(self):
+        invalid_input("Nie można modyfikować obiektu Stała")
 

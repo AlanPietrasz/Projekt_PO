@@ -38,6 +38,10 @@ class Macierz(ObiektMatematyczny):
     def get_dimensions(self):
         return (self.m, self.n)
 
+    def is_symmetric(self):
+        mac_float = self.macierz.astype(float)
+        return np.allclose(mac_float, mac_float.T)
+
     def eq_dimensions(self, m = 0, n = 0):
         if m != 0:
             if self.m != m:
@@ -46,6 +50,10 @@ class Macierz(ObiektMatematyczny):
             if self.n != n:
                 return False
         return True
+    
+    def swap_rows(self, row1, row2):
+        self.macierz[[row1-1, row2-1]] = self.macierz[[row2-1, row1-1]]
+        #self.macierz = np.swaprows(self.macierz, row1-1, row2-1)
 
     def __getitem__(self, indices):
         i, j = indices
@@ -138,12 +146,14 @@ class Macierz(ObiektMatematyczny):
                 user_input = input()
                 clear_terminal()
     
-    def create_matrix(nazwa="", m=0, n=0):
+    def create_matrix(nazwa="", m=0, n=0, equal=False):
         clear_terminal()
         if m == 0:
             m = Macierz.enter_matrix_size("Podaj liczbę wierszy")
         if n == 0:
-            n = Macierz.enter_matrix_size("Podaj liczbę kolumn")
+            n = m
+            if not equal:
+                n = Macierz.enter_matrix_size("Podaj liczbę kolumn")
         macierz = Macierz(m, n, nazwa)
         return Macierz.edit_matrix(macierz, m, n, is_wektor = False)
     
@@ -174,9 +184,8 @@ class Macierz(ObiektMatematyczny):
                     j += 1
             elif user_input == "q":
                 break
-            else:
-                print("Podano nieprawidłową wartość")
-                user_input = input()
+            # else:
+            #     invalid_input("Podano nieprawidłową wartość")
         return macierz
 
     def enter_matrix():

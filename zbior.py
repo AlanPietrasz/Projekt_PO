@@ -24,9 +24,10 @@ class Zbior(ObiektMatematyczny, Historia):
             raise ValueError("Osiągnięto maksymalną liczbę obiektów matematycznych w danym zbiorze")
         else:
             Historia.__setitem__(self, nazwa, obiekt, zbior = True)
+      
 
     def modify(self):
-        self.browse_set("return_object").modify()
+        self.set_menu()
     
     def show_object(self, i, wait=True, mode="show_object"):
         object = self.slownik_nazwa_wartosc[self.lista_indeks_nazwa[i-1]]
@@ -50,9 +51,10 @@ class Zbior(ObiektMatematyczny, Historia):
         print("3. Nowa liczba")
         print("4. Nowa stała")
         print("5. Nowa zmienna")
-        print("6. Edytuj wybrany obiekt")
+        print("6. Usuń wybrany obiekt")
         print("7. Przeglądaj zapisane obiekty matematyczne")
-        print("8. Menu historii obiektów")
+        print("8. Edytuj wybrany obiekt")
+        print("9. Menu historii obiektów")
         print("Podaj liczbę:   ", end="")
         
     def create_set(nazwa):
@@ -75,10 +77,14 @@ class Zbior(ObiektMatematyczny, Historia):
             elif (user_input == "5"):
                 self.new_variable()
             elif (user_input == "6"):
-                pass
+                self.browse_history("remove_object")
             elif (user_input == "7"):
-                self.browse_set()
+                self.browse_history("show_object")
             elif (user_input == "8"):
+                object_to_mod = self.browse_history("return_object")
+                if object_to_mod != None:
+                    object_to_mod.modify()
+            elif (user_input == "9"):
                 break
             else:
                 invalid_input("Podano niepoprawne dane")

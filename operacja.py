@@ -6,6 +6,7 @@ class Operacja:
     def __init__(self, nazwa):
         self.nazwa = nazwa
         self.lista_krokow = []
+        self.result = None
     
     def set_name(self, nazwa):
         self.nazwa = nazwa
@@ -20,7 +21,7 @@ class Operacja:
         return self.nazwa_typu
     
     def get_result(self):
-        if self.result:
+        if self.result != None:
             return self.result
         else:
             self.run_operation()
@@ -28,6 +29,11 @@ class Operacja:
     
     def __repr__(self):
         return self.nazwa
+    
+    def get_steps(self):
+        if self.lista_krokow == []:
+            self.run_operation()
+        return self.lista_krokow
         
     def print_operation_steps(self):
         if self.lista_krokow == []:

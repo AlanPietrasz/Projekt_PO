@@ -1,5 +1,5 @@
 import os
-import numpy as np
+import math
 
 import platform
 import sys
@@ -36,3 +36,14 @@ def invalid_input(message):
     user_input = input()
     clear_terminal()
 
+
+import math
+
+def round_to_n_significant_digits(number, n):
+    if number == 0:
+        return 0
+
+    power = math.floor(math.log10(abs(number))) + 1
+    scale = 10 ** (n - power)
+    rounded_number = round(number * scale) / scale
+    return rounded_number

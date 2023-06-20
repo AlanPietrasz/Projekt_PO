@@ -125,3 +125,66 @@ class OperacjaBinarna(OperacjaUnarna):
                     
             res += "\n"
         return res
+    
+       
+    def str_num_op_m_eq_m(self, other, other2, operator="o", color_list1=[], color_list2=[], color_list3=[], color=Fore.GREEN, color2=Fore.CYAN):
+        res = ""
+        num = self.get_value()
+        arr = other.macierz
+        arr2 = other2.macierz
+        height = max([arr.shape[0], arr2.shape[0]])
+        num_width = len(str(num))
+        max_width = np.vectorize(lambda x: len(str(x)))(arr).max()
+        max_width2 = np.vectorize(lambda x: len(str(x)))(arr2).max()
+        n_len = len(str(other.n))
+        m_len = len(str(other.m))
+        n2_len = len(str(other2.n))
+        m2_len = len(str(other2.m))
+        
+        res += " "*(num_width+2)
+        res += " " * 3
+        res += " " * (2 + n_len)
+        for j in range(arr.shape[1]):
+            res += " " * (max_width - len(str(j)))
+            res += f"{color2}{j+1}:{Style.RESET_ALL}"
+        res += " " * 3
+        res += " " * (2 + n2_len)
+        for j in range(arr2.shape[1]):
+            res += " " * (max_width2 - len(str(j)))
+            res += f"{color2}{j+1}:{Style.RESET_ALL}"
+        res += "\n"
+        
+        for i in range(height):
+            
+            res += f" {str(num) if i == int(other.m / 2) else ' '*num_width} "
+            
+            res += f" {operator if i == int(other.m / 2) else ' '} "
+            
+            if not arr.shape[0] < i + 1:
+                res += f"{color2}{i+1}:{Style.RESET_ALL} "
+                res += " " * (m_len - (len(str(i+1))))
+                for j in range(arr.shape[1]):
+                    if (i + 1, j + 1) in color_list2:
+                        res += f"{color}{str(arr[i, j]).rjust(max_width)}{Style.RESET_ALL} "
+                    else:
+                        res += str(arr[i, j]).rjust(max_width) + " "
+
+            else:
+                res += " " * m_len + " " * max_width + " " 
+ 
+            res += f" {'=' if i == int(other.m / 2) else ' '} "
+            
+            if not arr2.shape[0] < i + 1:
+                res += f"{color2}{i+1}:{Style.RESET_ALL} "
+                res += " " * (m2_len - (len(str(i+1))))
+                for j in range(arr2.shape[1]):
+                    if (i + 1, j + 1) in color_list3:
+                        res += f"{color}{str(arr2[i, j]).rjust(max_width2)}{Style.RESET_ALL} "
+                    else:
+                        res += str(arr2[i, j]).rjust(max_width2) + " "
+            else:
+                res += " " * m2_len + " " * max_width2 + " " 
+            
+                    
+            res += "\n"
+        return res

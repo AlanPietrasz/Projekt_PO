@@ -114,8 +114,8 @@ class Historia:
                     chosen += 1
             elif user_input == "q":
                 break
-            else:
-                invalid_input("Podano nieprawidłową wartość")
+            # else:
+            #     invalid_input("Podano nieprawidłową wartość")
     
     def return_object_memory_menu():
         print("Czy chcesz wybrać podany obiekt?")
