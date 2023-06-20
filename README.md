@@ -20,3 +20,7 @@ Dostępne operacje:
 * kryterium Sylwestera
 
 W historii operacji znajdują się już przykładowe operacje, których kroki można obejrzeć. W historii obiektów również znajdują się przykładowe obiekty matematyczne do dyspozycji użytkownika.
+
+Link do repozytorium na githubie:
+
+https://github.com/AlanPietrasz/Projekt_PO.git
