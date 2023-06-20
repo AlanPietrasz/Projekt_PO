@@ -107,15 +107,13 @@ class Historia:
                 if chosen >= self.dlugosc_historii():
                     continue
                 if chosen + 1 > i + self.MAX_NUMBER_OF_SHOWED_ELEMS - 1:
-                    if i + self.MAX_NUMBER_OF_SHOWED_ELEMS - 1 < self.dlugosc_historii(): #len(self.lista_indeks_nazwa):
+                    if i + self.MAX_NUMBER_OF_SHOWED_ELEMS - 1 < self.dlugosc_historii():
                         i += 1
                         chosen += 1
                 else:
                     chosen += 1
             elif user_input == "q":
                 break
-            # else:
-            #     invalid_input("Podano nieprawidłową wartość")
     
     def return_object_memory_menu():
         print("Czy chcesz wybrać podany obiekt?")
@@ -152,20 +150,7 @@ class Historia:
             elif (user_input == "2"):
                 break
             else:
-                invalid_input("Podano niepoprawne dane") 
-        
-    # def add_to_history(self, operacja):
-    #     while (True):
-    #         Historia.return_matrix_object_memory_menu()
-    #         user_input = input()
-    #         if (user_input == "1"):
-    #             nazwa = self.create_name()
-    #             self[nazwa] = operacja
-    #             break
-    #         elif (user_input == "2"):
-    #             break
-    #         else:
-    #             invalid_input("Podano niepoprawne dane")    
+                invalid_input("Podano niepoprawne dane")   
                 
     def return_from_history(self):
         return self.browse_history(mode="return_object")

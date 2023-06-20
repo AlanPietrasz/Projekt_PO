@@ -19,11 +19,8 @@ def get_char():
         old_settings = termios.tcgetattr(fd)
         try:
             tty.setraw(sys.stdin.fileno())
-            # val = sys.stdin.read(1)
-            # return val
             char = sys.stdin.read(1)
-            if ord(char) == 13:  # Kod ASCII dla klawisza Enter
-                # Jeśli wcisnięto Enter, zwróć pusty znak
+            if ord(char) == 13:
                 return "enter"
             return char
             

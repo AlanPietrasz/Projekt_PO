@@ -119,22 +119,9 @@ class Menu:
         print("8. Kryterium Sylwestera")
         print("9. Wyjście")
         print("Podaj liczbę:   ", end="")
-        # print("1. Dodawanie, odejmowanie i mnożenie macierzy")
-        # print("2. Eliminacja Gaussa")
-        # print("3. Obliczenie wyznacznika macierzy")
-        # print("4. Ortagonalizacja Grama-Schmidta")
-        # print("5. Obliczenie Page Ranku")
-        # print("6. Sprawdzenie, czy dana macierz jest dodatnio określona przy pomocy kryterium Sylwestera")
-        # print("7. Zakończ")
 
 
     def run(self):
-        # m1 = self.historia_obiektow.get_val("id")
-        # m2 = self.historia_obiektow.get_val("exm2")
-        # d1 = Dodawanie("dod1", m1, m2)
-        # d1.print_operation_steps()
-        
-        # user_input = input()
         while True:
             Menu.display_menu()
             user_input = input()

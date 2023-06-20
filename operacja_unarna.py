@@ -15,14 +15,12 @@ class OperacjaUnarna(Operacja):
         self.wymiary1 = m1.get_dimensions()
         
     def display_enter_matrix_menu():
-        #clear_terminal()
         print("------------WYBIERZ-MACIERZ---------------") 
         print("1. Utwórz nową macierz")
         print("2. Wybierz macierz z pamięci")       
         print("Podaj liczbę:   ", end="")
  
     def display_enter_number_menu():
-        #clear_terminal()
         print("------------WYBIERZ-SKALAR---------------") 
         print("1. Utwórz nową liczbę")
         print("2. Wybierz liczbę z pamięci")       
