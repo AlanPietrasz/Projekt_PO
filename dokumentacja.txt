@@ -1,0 +1,51 @@
+Dokumentacja projektu
+Projekt jest aplikacją do zarządzania macierzami i wykonywania na nich różnych operacji matematycznych. Składa się z kilku klas i modułów, które umożliwiają interakcję z użytkownikiem oraz manipulację obiektami macierzy, wektorów, liczb, stałych i zmiennych.
+
+Klasy:
+Menu - klasa reprezentująca menu główne aplikacji. Posiada metody do wyświetlania menu oraz obsługi wyborów użytkownika. Jest punktem startowym programu.
+
+Historia - klasa reprezentująca historię obiektów i operacji. Przechowuje informacje o utworzonych obiektach oraz wykonanych operacjach na nich. Udostępnia metody do zarządzania pamięcią obiektów i operacji.
+
+HistoriaObiektow - klasa dziedzicząca po klasie Historia. Przechowuje obiekty macierzy, wektorów, liczb, stałych, zmiennych i zbiorów.
+
+HistoriaOperacji - klasa dziedzicząca po klasie Historia. Przechowuje wykonane operacje dodawania, odejmowania, mnożenia, mnożenia przez skalar, eliminacji Gaussa, obliczania wyznacznika i kryterium Sylwestera.
+
+Macierz - klasa reprezentująca obiekt macierzy. Przechowuje rozmiar macierzy oraz jej elementy. Udostępnia metody do wykonywania operacji na macierzach.
+
+Wektor - klasa reprezentująca obiekt wektora dziedzicząca po macierzy. Przechowuje rozmiar wektora oraz jego elementy. Udostępnia metody do wykonywania operacji na wektorach.
+
+Liczba - klasa reprezentująca obiekt liczby. Przechowuje wartość liczby. Nie można zmienić jej wartości.
+
+Stala - klasa dziedzicząca po klasie Liczba. Reprezentuje obiekt stałej matematycznej. Nie można zmienić jej wartości.
+
+Zmienna - klasa dziedzicząca po klasie Liczba. Reprezentuje obiekt zmiennej matematycznej. Można zmieniać jej wartość
+
+Zbior - klasa reprezentująca obiekt zbioru. Przechowuje różne obiekty matematyczne pod określonymi kluczami.
+
+Operacja - klasa reprezentująca kroki podczas wykonywania danej operacji na macierzy.
+
+OperacjaUnarna - klasa reprezentująca operację na jednym obiekcie.
+
+OperacjaBinarna - klasa reprezentująca operację na dwóch obiektach.
+
+Dodawanie - klasa reprezentująca operację dodawania dwóch macierzy.
+
+Odejmowanie - klasa reprezentująca operację odejmowania dwóch macierzy.
+
+Mnozenie - klasa reprezentująca operację mnożenia dwóch macierzy.
+
+MnozeniePrzezSkalar - klasa reprezentująca operację mnożenia macierzy przez skalar.
+
+EliminacjaGaussa - klasa reprezentująca operację eliminacji Gaussa na macierzy.
+
+MnozeniePrzezSkalar - klasa reprezentująca operację mnożenia macierzy przez skalarną liczbę.
+
+Wyznacznik - klasa reprezentująca operację obliczania wyznacznika macierzy.
+
+KryteriumSylwestera - klasa reprezentująca operację obliczania kryterium Sylwestera dla macierzy.
+
+Plki pomocnicze:
+
+main.py - służy do uruchomienia projektu
+
+aux.py - plik z pomocniczymi funkcjami

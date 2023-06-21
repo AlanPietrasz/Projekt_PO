@@ -1,0 +1,1737 @@
+import os
+import math
+
+import platform
+import sys
+import tty
+import termios
+
+
+def clear_terminal():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+def get_char():
+    if platform.system() == 'Windows':
+        import msvcrt
+        return msvcrt.getch().decode()
+    else:
+        fd = sys.stdin.fileno()
+        old_settings = termios.tcgetattr(fd)
+        try:
+            tty.setraw(sys.stdin.fileno())
+            char = sys.stdin.read(1)
+            if ord(char) == 13:
+                return "enter"
+            return char
+            
+        finally:
+            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+            
+def invalid_input(message):
+    print()
+    print(message)
+    user_input = input()
+    clear_terminal()
+
+
+import math
+
+def round_to_n_significant_digits(number, n):
+    if number == 0:
+        return 0
+
+    power = math.floor(math.log10(abs(number))) + 1
+    scale = 10 ** (n - power)
+    rounded_number = round(number * scale) / scale
+    return rounded_number
+from colorama import Fore
+import numpy as np
+
+from aux import clear_terminal
+from macierz import Macierz
+
+from operacja_unarna import OperacjaUnarna
+from operacja_binarna import OperacjaBinarna
+
+class Dodawanie(OperacjaBinarna):
+    nazwa_typu = "DODAWANIE"
+    def __init__(self, nazwa, m1, m2):
+        OperacjaBinarna.__init__(self, nazwa, m1, m2)
+        if self.wymiary1 != self.wymiary2:
+            raise ValueError("Wymiary macierzy nie są takie same")
+        self.m = self.wymiary1[0]
+        self.n = self.wymiary1[1]
+        
+    def enter_m_m(historia, nazwa = ""):
+        clear_terminal()
+        print("Podaj pierwszą macierz")
+        m1 = OperacjaUnarna.enter_matrix(historia)
+        clear_terminal()
+        print("Podaj drugą macierz")
+        m2 = OperacjaUnarna.enter_matrix(historia, m1.get_dimensions()[0], m1.get_dimensions()[1])
+        return Dodawanie(nazwa, m1, m2)
+      
+    def run_operation(self):
+        my_list = [[] for _ in range(self.m)]
+        for i in range(self.m):
+            for j in range(self.n):
+                my_list[i].append(str(self.m1[i+1, j+1]) + "+" + str(self.m2[i+1, j+1]))
+
+        t1 = np.array(my_list, dtype=np.str_)
+        step1 = Macierz(self.m, self.n, "", t1)
+        
+        self.lista_krokow.append(OperacjaBinarna.str_m_op_m_eq_m(self.m1, self.m2, step1, "+"))
+        step1.eval()
+        self.lista_krokow.append(OperacjaBinarna.str_m_op_m_eq_m(self.m1, self.m2, step1, "+"))
+        self.result = step1from aux import clear_terminal, round_to_n_significant_digits
+
+from operacja_unarna import OperacjaUnarna
+
+class EliminacjaGaussa(OperacjaUnarna):
+    EPSILON_POWER = 8
+    EPSILON = 10 ** -EPSILON_POWER
+    nazwa_typu = "ELIMINACJA G."
+    def __init__(self, nazwa, m1):
+        OperacjaUnarna.__init__(self, nazwa, m1)
+        self.m = self.wymiary1[0]
+        self.n = self.wymiary1[1]
+    
+    def enter_m(historia, nazwa = ""):
+        clear_terminal()
+        print("Podaj macierz")
+        m1 = OperacjaUnarna.enter_matrix(historia)
+        return EliminacjaGaussa(nazwa, m1)
+    
+    def run_operation(self):
+        res_matrix = self.m1.copy()
+        self.lista_krokow.append(res_matrix.to_str())
+        zuzyte_wiersze = []
+        for kolumna in range(1, self.n+1):
+            zbior_niezerowych_wierszy = [i for i 
+                                         in range(1, self.m+1) 
+                                         if float(res_matrix[i, kolumna]) != 0.0]            
+            zbior_niezerowych_wierszy = [x for x in zbior_niezerowych_wierszy if x not in zuzyte_wiersze]
+            
+            if zbior_niezerowych_wierszy != []:
+                e = min(zbior_niezerowych_wierszy)
+                zuzyte_wiersze.append(e)
+                color_list1 = [(e, l) for l in range(1, self.n+1)]
+                zbior_niezerowych_wierszy.remove(e)
+                color_list2 = [(e2, l) for l in range(1, self.n+1) for e2 in zbior_niezerowych_wierszy]
+                for wiersz in zbior_niezerowych_wierszy:
+                    wspolczynnik = "("+str(res_matrix[wiersz, kolumna])+"/"+str(res_matrix[e, kolumna])+")"
+                    for j in range(kolumna, self.n+1):
+                        r_str = str(res_matrix[wiersz, j])+\
+                            "-("+wspolczynnik+"*"+str(res_matrix[e, j])+")"
+                        res_matrix[wiersz, j] = r_str
+                        self.lista_krokow.append(res_matrix.to_str_2_col(color_list1, color_list2))
+                        r_num = eval(r_str)
+                        if r_num < 1000:
+                            r_num_round = round_to_n_significant_digits(r_num, self.EPSILON_POWER)
+                            diff = r_num - r_num_round
+                            if diff < self.EPSILON and diff > -self.EPSILON:
+                                r_num = r_num_round
+                        if int(r_num) == r_num:
+                            res_matrix[wiersz, j] = int(r_num)
+                        else:
+                            res_matrix[wiersz, j] = r_num
+                        self.lista_krokow.append(res_matrix.to_str_2_col(color_list1, color_list2))
+        
+        self.licznik_zamiany_kolumn = 0
+        ustawione = 0
+        for kolumna in range(1, self.n+1):
+            if ustawione == self.m:
+                break
+            zerowe_wiersze = []
+            niezerowe_wiersze = []
+            
+            for wiersz in range(ustawione+1, self.m+1):
+                if float(res_matrix[wiersz, kolumna]) == 0:
+                    zerowe_wiersze.append(wiersz)
+                else:
+                    niezerowe_wiersze.append(wiersz)
+                    
+            do_ustawienia = ustawione + len(niezerowe_wiersze)
+                        
+            for zerowy_wiersz in zerowe_wiersze:
+                if zerowy_wiersz <= do_ustawienia:
+                    color_list1 = [(zerowy_wiersz, l) for l in range(1, self.n+1)]
+                    if niezerowe_wiersze != []:
+                        wiersz_do_przestawienia = max(niezerowe_wiersze)
+                        niezerowe_wiersze.remove(wiersz_do_przestawienia)
+                        color_list2 = [(wiersz_do_przestawienia, l) for l in range(1, self.n+1)]
+                        self.lista_krokow.append(res_matrix.to_str_2_col(color_list1, color_list2))
+                        res_matrix.swap_rows(zerowy_wiersz, wiersz_do_przestawienia)
+                        self.licznik_zamiany_kolumn += 1
+                        self.lista_krokow.append(res_matrix.to_str_2_col(color_list2, color_list1))
+                        
+            ustawione = do_ustawienia
+                    
+        self.result = res_matrix
+        
+from collections import defaultdict as dd
+from colorama import Fore, Style
+
+from aux import *
+
+class Historia:
+    MAX_NUMBER_OF_SHOWED_ELEMS = 10
+
+    def __init__(self, slownik_nazwa_wartosc = dd()):
+        self.lista_indeks_nazwa = list()
+        self.slownik_nazwa_wartosc = slownik_nazwa_wartosc
+        self.dlugosc_historii = lambda : len(self.lista_indeks_nazwa)
+        
+    def __setitem__(self, nazwa, wartosc, zbior = False):
+        if nazwa in self.lista_indeks_nazwa:
+            raise ValueError(f"Obiekt matematyczny o danej nazwie już istnieje w {'zbiorze' if zbior else 'historii'}")
+        self.lista_indeks_nazwa.append(nazwa) 
+        self.slownik_nazwa_wartosc[nazwa] = wartosc
+
+    def create_name(self):
+        clear_terminal()               
+        while(True):
+            print("Podaj nazwę")
+            user_input = input()
+            if user_input == "":
+                invalid_input("Podano nieprawidłową nazwę")
+                continue
+            try:
+                user_input = int(user_input)
+                invalid_input("Podano nieprawidłową nazwę")
+                continue
+            except:
+                if user_input in self.lista_indeks_nazwa:
+                    invalid_input("Obiekt matematyczny o danej nazwie już istnieje")
+                    continue
+                return user_input
+        
+    def __getitem__(self, nazwa_ind):
+        if nazwa_ind in self.lista_indeks_nazwa:
+            return self.slownik_nazwa_wartosc[nazwa_ind]
+        try:
+            ind = int(nazwa_ind)
+        except:
+            invalid_input("Obiekt o danej nazwie nie istnieje")
+        return self.get_val(self.lista_indeks_nazwa[ind-1])
+    
+    def remove(self, nazwa):
+        self.lista_indeks_nazwa.remove(nazwa)
+        self.slownik_nazwa_wartosc.pop(nazwa)
+
+    def get_val(self, nazwa):
+        return self.slownik_nazwa_wartosc[nazwa]
+    
+    def print_range(self, b, e, chosen=0, naglowek = "HISTORIA", color=Fore.GREEN):
+        if b - e > Historia.MAX_NUMBER_OF_SHOWED_ELEMS:
+            e = b + Historia.MAX_NUMBER_OF_SHOWED_ELEMS
+        if e > self.dlugosc_historii():
+            e = self.dlugosc_historii()
+        clear_terminal()
+        print("---------", naglowek, "-----------")
+        max_len = len(str(e))
+        max_len_type_repr = len(max([obiekt.type_repr() for obiekt 
+                                 in self.slownik_nazwa_wartosc.values()], key=len))
+        for i in range(b-1, e):
+            obiekt = self.slownik_nazwa_wartosc[self.lista_indeks_nazwa[i]]
+            print(f"{Fore.YELLOW}{i+1}: {Style.RESET_ALL}", end="")
+            print(" " * (max_len - len(str(i+1))), end="")
+            print(f"{Fore.CYAN}{obiekt.type_repr()} {Style.RESET_ALL}", end="")
+            print(" " * (max_len_type_repr - len(obiekt.type_repr())), end="")
+            if i != chosen - 1: 
+                print(repr(obiekt))
+            else:
+                print(f"{color}{repr(obiekt)}{Style.RESET_ALL}")
+
+    def browse_history(self, mode="show_object"):
+        i = 1
+        chosen = 1
+        while True:
+            self.print_range(i, i + self.MAX_NUMBER_OF_SHOWED_ELEMS - 1, chosen)
+            print("Używaj ws, aby poruszać się po historii")
+            print("Naciśnij ENTER jeśli chcesz zobaczyć wartość w wybranym polu")
+            print("Naciśnij q jeśli chcesz zakończyć przeglądanie historii")
+            user_input = get_char()
+            if user_input == "enter":
+                if mode == "show_object":
+                    self.show_object(chosen)
+                elif mode == "return_object":
+                    res = self.return_menu(chosen)
+                    if res != None:
+                        return res
+                elif mode == "remove_object":
+                    if self.dlugosc_historii() > 0:
+                        self.delete_menu(chosen)
+                        if chosen > self.dlugosc_historii():
+                            chosen -= 1
+                    else:
+                        invalid_input("Historia jest pusta")
+            elif user_input == "w":
+                if chosen - 1 < i:
+                    if i > 1:
+                        i -= 1
+                        chosen -= 1
+                else:
+                    chosen -= 1
+            elif user_input == "s":
+                if chosen >= self.dlugosc_historii():
+                    continue
+                if chosen + 1 > i + self.MAX_NUMBER_OF_SHOWED_ELEMS - 1:
+                    if i + self.MAX_NUMBER_OF_SHOWED_ELEMS - 1 < self.dlugosc_historii():
+                        i += 1
+                        chosen += 1
+                else:
+                    chosen += 1
+            elif user_input == "q":
+                break
+    
+    def return_object_memory_menu():
+        print("Czy chcesz wybrać podany obiekt?")
+        print("1. Tak")
+        print("2. Wybierz inny")
+        print("Podaj liczbę:   ", end="")
+    
+    def return_menu(self, chosen):
+        while True:
+            self.show_object(chosen, wait=False, mode="return_object")
+            Historia.return_object_memory_menu()
+            user_input = input()
+            if (user_input == "1"):
+                return self[chosen]
+            elif (user_input == "2"):
+                return None
+            else:
+                invalid_input("Podano niepoprawne dane") 
+
+    def delete_object_memory_menu():
+        print("Czy chcesz usunąć podany obiekt?")
+        print("1. Tak")
+        print("2. Wybierz inny")
+        print("Podaj liczbę:   ", end="")
+    
+    def delete_menu(self, chosen):
+        while True:
+            self.show_object(chosen)
+            Historia.delete_object_memory_menu()
+            user_input = input()
+            if (user_input == "1"):
+                self.remove(self.lista_indeks_nazwa[chosen-1])
+                break
+            elif (user_input == "2"):
+                break
+            else:
+                invalid_input("Podano niepoprawne dane")   
+                
+    def return_from_history(self):
+        return self.browse_history(mode="return_object")
+            
+    def print_all(self):
+        Historia.print_range(self, 1, self.dlugosc_historii())
+        
+    def display_memory_menu():
+        clear_terminal()
+        print("------------MENU-PAMIĘCI---------------")
+        print("1. Zapisane obiekty matematyczne")
+        print("2. Zapisane operacje")
+        print("3. Menu Główne")
+        print("Podaj liczbę:   ", end="")
+        
+        
+
+        
+
+from historia import Historia
+from colorama import Fore, Style
+
+from aux import clear_terminal, invalid_input
+from obiekt_matematyczny import ObiektMatematyczny
+from macierz import Macierz
+from wektor import Wektor
+from liczba import Liczba
+from stala import Stala
+from zmienna import Zmienna
+from zbior import Zbior
+
+class HistoriaObiektow(Historia):
+    def __init__(self):
+        Historia.__init__(self)
+
+    def display_add_object_memory_menu():
+        clear_terminal()
+        print("Czy chcesz dodać obiekt do historii?")
+        print("1. Dodaj do pamięci")
+        print("2. Usuń obiekt")
+        print("Podaj liczbę:   ", end="")   
+    
+    def add_to_history(self, operacja):
+        while (True):
+            HistoriaObiektow.display_add_object_memory_menu()
+            user_input = input()
+            if (user_input == "1"):
+                obiekt = operacja.get_result()
+                if not isinstance(obiekt, Liczba):
+                    nazwa = self.create_name()
+                    obiekt.set_name(nazwa)
+                    self[nazwa] = obiekt
+                else:
+                    self[str(obiekt)] = obiekt
+                break
+            elif (user_input == "2"):
+                break
+            else:
+                invalid_input("Podano niepoprawne dane") 
+        
+    def show_object(self, i, wait=True, mode="show_object"):
+        object = self.slownik_nazwa_wartosc[self.lista_indeks_nazwa[i-1]]
+        if not isinstance(object, Zbior):
+            if not isinstance(object, Liczba) or isinstance(object, Stala) or isinstance(object, Zmienna):
+                print(repr(object))
+            print(object)
+            if wait:
+                user_input = input()
+        else:
+            if mode != "return_object":
+                object.browse_set()
+        
+    def display_object_memory_menu():
+        clear_terminal()
+        print("------------HISTORIA-OBIEKTÓW---------------")
+        print("1. Nowa macierz")
+        print("2. Nowy wektor")
+        print("3. Nowa liczba")
+        print("4. Nowa stała")
+        print("5. Nowa zmienna")
+        print("6. Nowy zbior")
+        print("7. Usuń wybrany obiekt")
+        print("8. Przeglądaj zapisane obiekty matematyczne")
+        print("9. Edytuj wybrany obiekt")
+        print("10. Menu Pamięci")
+        print("Podaj liczbę:   ", end="")
+        
+    def object_memory_menu(self):
+        while (True):
+            HistoriaObiektow.display_object_memory_menu()
+            user_input = input()
+            if (user_input == "1"):
+                self.new_matrix()
+            elif (user_input == "2"):
+                self.new_vector()
+            elif (user_input == "3"):
+                self.new_number()
+            elif (user_input == "4"):
+                self.new_constant()
+            elif (user_input == "5"):
+                self.new_variable()
+            elif (user_input == "6"):
+                self.new_set()
+            elif (user_input == "7"):
+                self.browse_history("remove_object")
+            elif (user_input == "8"):
+                self.browse_history("show_object")
+            elif (user_input == "9"):
+                object_to_mod = self.browse_history("return_object")
+                if object_to_mod != None:
+                    object_to_mod.modify()
+            elif (user_input == "10"):
+                break
+            else:
+                invalid_input("Podano niepoprawne dane")
+     
+    def new_matrix(self):
+        nazwa = self.create_name()
+        nowy_obiekt = Macierz.create_matrix(nazwa)
+        self[repr(nowy_obiekt)] = nowy_obiekt
+
+    def new_vector(self):
+        nazwa = self.create_name()
+        nowy_obiekt = Wektor.create_wektor(nazwa)
+        self[repr(nowy_obiekt)] = nowy_obiekt
+        
+    def new_number(self):
+        while True:
+            wartosc = ObiektMatematyczny.create_number_val()
+            nazwa = str(wartosc)
+            if nazwa in self.lista_indeks_nazwa:
+                invalid_input("Podana liczba jest już zapisana")
+                continue
+            break
+        nowy_obiekt = Liczba(wartosc)
+        self[repr(nowy_obiekt)] = nowy_obiekt
+        
+    def new_constant(self):
+        nazwa = self.create_name()
+        wartosc = Liczba.create_number_val()
+        self[nazwa] = Stala(wartosc, nazwa)
+        
+    def new_variable(self):
+        nazwa = self.create_name()
+        wartosc = Liczba.create_number_val()
+        self[nazwa] = Zmienna(wartosc, nazwa)
+        
+    def new_set(self):
+        nazwa = self.create_name()
+        nowy_obiekt = Zbior.create_set(nazwa)
+        self[nazwa] = nowy_obiekt
+from historia import Historia
+
+from aux import clear_terminal, invalid_input
+from operacja import Operacja
+from dodawanie import Dodawanie
+
+class HistoriaOperacji(Historia):
+    def __init__(self):
+        Historia.__init__(self)
+        
+    def display_add_operation_memory_menu():
+        clear_terminal()
+        print("Czy chcesz dodać operację do historii?")
+        print("1. Dodaj do pamięci")
+        print("2. Usuń operację")
+        print("Podaj liczbę:   ", end="")   
+    
+    def add_to_history(self, operacja):
+        while (True):
+            HistoriaOperacji.display_add_operation_memory_menu()
+            user_input = input()
+            if (user_input == "1"):
+                nazwa = self.create_name()
+                operacja.set_name(nazwa)
+                self[nazwa] = operacja
+                break
+            elif (user_input == "2"):
+                break
+            else:
+                invalid_input("Podano niepoprawne dane")        
+
+    def display_operation_memory_menu():
+        clear_terminal()
+        print("------------HISTORIA-OPERACJI---------------")
+        print("1. Przeglądaj zapisane operacje")
+        print("2. Usuń wybraną operację z pamięci")
+        print("3. Menu Pamięci")
+        print("Podaj liczbę:   ", end="")   
+    
+        
+    def operation_memory_menu(self):
+        while (True):
+            HistoriaOperacji.display_operation_memory_menu()
+            user_input = input()
+            if (user_input == "1"):
+                self.browse_history()
+            elif (user_input == "2"):
+                self.browse_history("remove_object")
+            elif (user_input == "3"):
+                break
+            else:
+                invalid_input("Podano niepoprawne dane")
+     
+    def show_object(self, chosen):
+        self[chosen].print_operation_steps()from aux import clear_terminal
+
+from operacja_unarna import OperacjaUnarna
+from liczba import Liczba
+from wyznacznik import Wyznacznik
+
+class KryteriumSylwestera(Wyznacznik):
+    nazwa_typu = "KRYT. SYLWESTERA"
+    def __init__(self, nazwa, m1):
+        Wyznacznik.__init__(self, nazwa, m1)
+        
+    def enter_m(historia, nazwa = ""):
+        clear_terminal()
+        print("Podaj macierz")
+        m1 = OperacjaUnarna.enter_matrix(historia, 0, 0, True)
+        return KryteriumSylwestera(nazwa, m1)
+        
+    def run_operation(self):
+        if not self.m1.is_symmetric():
+            self.lista_krokow.append(self.m1.to_str())
+            self.lista_krokow.append("Macierz nie jest ani dodatnio, ani ujemnie określona, bo nie jest symetryczna")
+            self.result = Liczba(0)
+            self.result_matrix = self.m1
+        else:
+            Wyznacznik.run_operation(self)
+            res_matrix = self.get_result_matrix()
+            self.lista_krokow = self.get_steps_without_det()
+            det_list = []
+            for i in range(1, self.n+1):
+                color_list1 = [(l, l) for l in range(1, i+1)]
+                self.lista_krokow.append(res_matrix.to_str(color_list1))
+                res_str = ""
+                for j in range(1, i+1):
+                    res_str += str(res_matrix[j, j])
+                    if j != i:
+                        res_str += "*"
+                self.lista_krokow.append(res_str)
+                res_num = eval(res_str)
+                self.lista_krokow.append(res_num)
+                det_list.append(res_num)
+
+            
+            flag_pos = False
+            flag_neg = False
+            flag_zero = False
+            if det_list[0] < 0:
+                flag_neg = True
+            elif det_list[0] > 0:
+                flag_pos = True
+            else:
+                flag_zero = True
+                
+            for i, e in enumerate(det_list):
+                self.lista_krokow.append("det(M" + str(i+1) + ") = " + str(e) + f"{'> 0' if e>0 else ('< 0' if e<0 else '= 0')}")
+                if i + 1 % 2 == 1:
+                    if flag_pos and e < 0:
+                        flag_zero = True
+                        break
+                    elif flag_pos and e > 0:
+                        continue
+                    elif flag_neg and e < 0:
+                        continue
+                    elif flag_neg and e > 0:
+                        flag_zero = True
+                        break
+                    elif e == 0:
+                        flag_zero
+                        break
+                else:
+                    if e > 0:
+                        continue
+                    else:
+                        flag_zero = True
+                        break
+                    
+            res_str = "Macierz "   
+            if flag_zero:
+                res_num = 0
+                res_str += "nie jest ani dodatnio, ani ujemnie określona"
+            elif flag_pos:
+                res_num = 1
+                res_str += "jest dodatnio określona"
+            elif flag_neg:
+                res_num = -1
+                res_str += "jest ujemnie określona"
+                
+                
+            self.lista_krokow.append(res_str)
+            self.result = Liczba(res_num)
+            self.result_matrix = res_matrix
+        
+from aux import clear_terminal, invalid_input
+from obiekt_matematyczny import ObiektMatematyczny 
+
+
+class Liczba(ObiektMatematyczny):
+    nazwa_typu = "LICZBA"
+    
+    def __init__(self, wartosc):
+        self.nazwa = str(wartosc)
+        self.wartosc = wartosc
+        
+    def get_value(self):
+        return self.wartosc
+    
+    def __str__(self):
+        return str(self.get_value())
+    
+    def modify(self):
+        invalid_input("Nie można modyfikować obiektu Liczba")
+    
+from typing import Any
+import numpy as np
+import pandas as pd
+from colorama import Fore, Style
+
+from aux import *
+from obiekt_matematyczny import ObiektMatematyczny 
+
+
+class Macierz(ObiektMatematyczny):
+    MAX_MATRIX_SIZE = 20
+    nazwa_typu = "MACIERZ"
+    
+    def __init__(self, m, n, nazwa = "", tab=[]):
+        self.m = m
+        self.n = n
+
+        if tab == []:
+            tab = np.zeros((m, n), dtype=object)
+        self.macierz = np.reshape(tab, (m, n))
+        if nazwa == "":
+            self.has_a_name = False
+            self.nazwa = repr(self.macierz)
+        else:
+            self.has_a_name = True
+            self.nazwa = nazwa
+            
+    def copy(self, dtype=object):
+        nowy_obiekt = Macierz(self.m, self.n)
+        for i in range(1, self.m+1):
+            for j in range(1, self.n+1):
+                nowy_obiekt[i, j] = self[i, j]
+        return nowy_obiekt
+        
+    def get_value(self):
+        return self.macierz    
+    
+    def get_dimensions(self):
+        return (self.m, self.n)
+
+    def is_symmetric(self):
+        mac_float = self.macierz.astype(float)
+        return np.allclose(mac_float, mac_float.T)
+
+    def eq_dimensions(self, m = 0, n = 0):
+        if m != 0:
+            if self.m != m:
+                return False
+        if n != 0:
+            if self.n != n:
+                return False
+        return True
+    
+    def swap_rows(self, row1, row2):
+        self.macierz[[row1-1, row2-1]] = self.macierz[[row2-1, row1-1]]
+
+    def __getitem__(self, indices):
+        i, j = indices
+        return self.macierz[i-1, j-1]
+
+    def __setitem__(self, indices, value):
+        i, j = indices
+        self.macierz[i-1, j-1] = value
+        
+    def __repr__(self):
+        return self.nazwa
+    
+    def __str__(self):
+        return self.to_str()
+    
+    def eval(self):
+        for i in range(self.m):
+            for j in range(self.n):
+                self.macierz[i, j] = eval(self.macierz[i, j])
+                
+    def modify(self, is_wektor = False):
+        self.edit_matrix(self.m, self.n, is_wektor)
+        
+    def to_str(self, color_list=[], color=Fore.GREEN, color2=Fore.CYAN):
+        res = ""
+        arr = self.macierz
+        max_width = np.vectorize(lambda x: len(str(x)))(arr).max()
+        n_len = len(str(self.n))
+        m_len = len(str(self.m))
+        res += " " * (2 + n_len)
+        for j in range(arr.shape[1]):
+            res += " " * (max_width - len(str(j)))
+            res += f"{color2}{j+1}:{Style.RESET_ALL}"
+        res += "\n"
+        for i in range(arr.shape[0]):
+            res += f"{color2}{i+1}:{Style.RESET_ALL} "
+            res += " " * (m_len - (len(str(i+1))))
+            for j in range(arr.shape[1]):
+                if (i + 1, j + 1) in color_list:
+                    res += f"{color}{str(arr[i, j]).rjust(max_width)}{Style.RESET_ALL} "
+                else:
+                    res += str(arr[i, j]).rjust(max_width) + " "
+            res += "\n"
+        return res
+    
+    def to_str_2_col(self, color_list=[], color3_list = [], color=Fore.GREEN, color2=Fore.CYAN, color3=Fore.MAGENTA):
+        res = ""
+        arr = self.macierz
+        max_width = np.vectorize(lambda x: len(str(x)))(arr).max()
+        n_len = len(str(self.n))
+        m_len = len(str(self.m))
+        res += " " * (2 + n_len)
+        for j in range(arr.shape[1]):
+            res += " " * (max_width - len(str(j)))
+            res += f"{color2}{j+1}:{Style.RESET_ALL}"
+        res += "\n"
+        for i in range(arr.shape[0]):
+            res += f"{color2}{i+1}:{Style.RESET_ALL} "
+            res += " " * (m_len - (len(str(i+1))))
+            for j in range(arr.shape[1]):
+                if (i + 1, j + 1) in color_list:
+                    res += f"{color}{str(arr[i, j]).rjust(max_width)}{Style.RESET_ALL} "
+                elif (i + 1, j + 1) in color3_list:
+                    res += f"{color3}{str(arr[i, j]).rjust(max_width)}{Style.RESET_ALL} "
+                else:
+                    res += str(arr[i, j]).rjust(max_width) + " "
+            res += "\n"
+        return res
+        
+    def print(self, color_list = [], color=Fore.GREEN, color2=Fore.CYAN):
+        print(self.to_str(color_list, color, color2))
+
+    def print_np(self):
+        print(self.macierz)
+
+    def enter_matrix_size(message):
+        while True:
+            print(message)
+            user_input = input()
+            if user_input.isdigit():
+                s = int(user_input)
+                if s < 1 or s > Macierz.MAX_MATRIX_SIZE:
+                    print("Podano nieprawidłową wartość")
+                    user_input = input()
+                    clear_terminal()
+                else:
+                    return s
+            else:
+                print("Podano nieprawidłową wartość")
+                user_input = input()
+                clear_terminal()
+    
+    def create_matrix(nazwa="", m=0, n=0, equal=False):
+        clear_terminal()
+        if m == 0:
+            m = Macierz.enter_matrix_size("Podaj liczbę wierszy")
+        if n == 0:
+            n = m
+            if not equal:
+                n = Macierz.enter_matrix_size("Podaj liczbę kolumn")
+        macierz = Macierz(m, n, nazwa)
+        return Macierz.edit_matrix(macierz, m, n, is_wektor = False)
+    
+    def edit_matrix(macierz, m, n, is_wektor = False):
+        i = 1
+        j = 1
+        while True:
+            clear_terminal()
+            macierz.print([(i, j)])
+            print(f"Używaj wasd, aby poruszać się po {'wektorze' if is_wektor else 'macierzy'}")
+            print("Naciśnij ENTER jeśli chcesz wpisać wartość w wybrane pole")
+            print(f"Naciśnij q jeśli chcesz zakończyć wypełnianie pól {'wektora' if is_wektor else 'macierzy'}")
+            user_input = get_char()
+            if user_input == "enter":
+                wartosc = ObiektMatematyczny.create_number_val()
+                macierz[i, j] = wartosc
+            elif user_input == "w":
+                if i > 1:
+                    i -= 1
+            elif user_input == "a":
+                if j > 1:
+                    j -= 1
+            elif user_input == "s":
+                if i < m:
+                    i += 1
+            elif user_input == "d":
+                if j < n:
+                    j += 1
+            elif user_input == "q":
+                break
+        return macierz
+
+    def enter_matrix():
+        while(True):
+            print("------------MENU-GŁÓWNE-----------------")
+            print("1. Utwórz nową macierz")
+            print("2. Wybierz macierz zapisaną w pamięci")
+            print("Podaj liczbę:   ", end="")
+            user_input = input()
+            if user_input == "1":
+                nowy_obiekt = Macierz.create_matrix()
+            elif user_input == "2":
+                pass
+            else:
+                invalid_input("Podano niepoprawne dane")
+
+from menu import Menu
+
+menu = Menu()
+menu.run()
+
+from aux import clear_terminal, invalid_input
+
+from macierz import Macierz
+from wektor import Wektor
+from liczba import Liczba
+from stala import Stala
+from zmienna import Zmienna
+from zbior import Zbior
+
+from historia import Historia
+from historia_obiektow import HistoriaObiektow
+from historia_operacji import HistoriaOperacji
+
+from dodawanie import Dodawanie
+from odejmowanie import Odejmowanie
+from mnozenie import Mnozenie
+from eliminacja_gaussa import EliminacjaGaussa
+from mnozenie_przez_skalar import MnozeniePrzezSkalar
+from wyznacznik import Wyznacznik
+from kryterium_sylwestera import KryteriumSylwestera
+
+class Menu:
+    def __init__(self):
+        self.historia_obiektow = HistoriaObiektow()
+        self.historia_operacji = HistoriaOperacji()
+        self.historia_obiektow["macierz_id3"] = Macierz(3, 3, "macierz_id3", [[1, 0, 0],
+                                                                              [0, 1, 0],
+                                                                              [0, 0, 1]])
+        self.historia_obiektow["macierz1"] = Macierz(3, 3, "macierz1", [[1, 2, 2],
+                                                                        [0, 1, 0],
+                                                                        [4, 0, 1]])
+        self.historia_obiektow["macierz2"] = Macierz(2, 3, "macierz2", [[1, 2, 3],
+                                                                        [0, 1, 2]])
+        self.historia_obiektow["macierz3"] = Macierz(3, 5, "macierz3", [[1, 2, 3, 4, 6],
+                                                                        [1, 2, 3, 8, 7],
+                                                                        [0, 1, 2, 3, 2]])
+        self.historia_obiektow["macierz4"] = Macierz(3, 5, "macierz4", [[0, 2, 3, 4, 6],
+                                                                        [0, 0, 3, 8, 7],
+                                                                        [3, 1, 2, 3, 2]])
+        self.historia_obiektow["macierz5"] = Macierz(3, 3, "macierz5", [[5, 2, -1],
+                                                                        [0, 0, 1],
+                                                                        [6, 2, 3]])
+        self.historia_obiektow["macierz6"] = Macierz(3, 3, "macierz6", [[5, 5, 5],
+                                                                        [2, 1, -1],
+                                                                        [3, 4, 6]])
+        self.historia_obiektow["macierz7"] = Macierz(3, 3, "macierz7", [[1, 2, 0],
+                                                                        [-1, 2, 0],
+                                                                        [0, 0, 1]])
+        self.historia_obiektow["macierz8"] = Macierz(3, 3, "macierz8", [[2, 2, 0],
+                                                                        [2, 2, 0],
+                                                                        [0, 0, 1]])
+        self.historia_obiektow["macierz9"] = Macierz(3, 3, "macierz9", [[6, 2, 4],
+                                                                        [2, 1, 1],
+                                                                        [4, 1, 5]])
+        self.historia_obiektow["wektor1"] = Wektor(3, "wektor1", [[1, 2, 3]])
+        self.historia_obiektow["pi"] = Stala(3.14,"pi")
+        self.historia_obiektow["2.5"] = Liczba(2.5)
+        self.historia_obiektow["x"] = Zmienna(5, "x")
+        zbior1 = Zbior("zbior_macierzy_id")
+        zbior1["macierz_id2"] = Macierz(2, 2, "macierz_id2", [[1, 0],
+                                                              [0, 1]])     
+        zbior1["macierz_id3"] = Macierz(3, 3, "macierz_id3", [[1, 0, 0],
+                                                              [0, 1, 0],
+                                                              [0, 0, 1]])
+        zbior1["macierz_id4"] = Macierz(4, 4, "macierz_id4", [[1, 0, 0, 0],
+                                                              [0, 1, 0, 0],
+                                                              [0, 0, 1, 0],
+                                                              [0, 0, 0, 1]])
+        for i in range(10):
+            zbior1[str(i)] = Liczba(i)
+        self.historia_obiektow["zbior1"] = zbior1
+        for i in range(10):
+            self.historia_obiektow[str(i)] = Liczba(i)
+            
+        self.historia_operacji["dodawanie1"] = Dodawanie("dodawanie1",
+                                                        self.historia_obiektow["macierz_id3"],
+                                                        self.historia_obiektow["macierz1"])
+        self.historia_operacji["odejmowanie1"] = Odejmowanie("odejmowanie1",
+                                                            self.historia_obiektow["macierz_id3"],
+                                                            self.historia_obiektow["macierz1"])
+        self.historia_operacji["mnozenie1"] = Mnozenie("mnozenie1",
+                                                        self.historia_obiektow["macierz_id3"],
+                                                        self.historia_obiektow["macierz1"])
+        self.historia_operacji["mnozenie2"] = Mnozenie("mnozenie2",
+                                                        self.historia_obiektow["macierz2"],
+                                                        self.historia_obiektow["macierz3"])
+        self.historia_operacji["mnozenie_sk1"] = MnozeniePrzezSkalar("mnozenie_sk1",
+                                                                    self.historia_obiektow["x"],
+                                                                    self.historia_obiektow["macierz4"])
+        self.historia_operacji["elim_g1"] = EliminacjaGaussa("elim_g1",
+                                                            self.historia_obiektow["macierz3"])
+        self.historia_operacji["elim_g2"] = EliminacjaGaussa("elim_g2",
+                                                            self.historia_obiektow["macierz4"])
+        self.historia_operacji["elim_g3"] = EliminacjaGaussa("elim_g3",
+                                                            self.historia_obiektow["macierz5"])
+        self.historia_operacji["wyznacznik1"] = Wyznacznik("wyznacznik1",
+                                                            self.historia_obiektow["macierz_id3"])
+        self.historia_operacji["wyznacznik2"] = Wyznacznik("wyznacznik2",
+                                                            self.historia_obiektow["macierz5"])
+        self.historia_operacji["wyznacznik3"] = Wyznacznik("wyznacznik3",
+                                                            self.historia_obiektow["macierz6"])
+        self.historia_operacji["kryt1"] = KryteriumSylwestera("kryt1",
+                                                                self.historia_obiektow["macierz7"])
+        self.historia_operacji["kryt2"] = KryteriumSylwestera("kryt2",
+                                                                self.historia_obiektow["macierz8"])
+        self.historia_operacji["kryt3"] = KryteriumSylwestera("kryt3",
+                                                                self.historia_obiektow["macierz9"])
+    def display_menu():
+        clear_terminal()
+        print("------------MENU-GŁÓWNE-----------------")
+        print("1. Zarządzanie pamięcią")
+        print("2. Dodawanie macierzy")
+        print("3. Odejmowanie macierzy")
+        print("4. Mnożenie macierzy przez skalar")
+        print("5. Mnożenie macierzy")
+        print("6. Eliminacja Gaussa")
+        print("7. Wyznacznik")
+        print("8. Kryterium Sylwestera")
+        print("9. Wyjście")
+        print("Podaj liczbę:   ", end="")
+
+
+    def run(self):
+        while True:
+            Menu.display_menu()
+            user_input = input()
+            if (user_input == "1"):
+                while True:
+                    Historia.display_memory_menu()
+                    user_input = input()
+                    if (user_input == "1"):
+                        self.historia_obiektow.object_memory_menu()
+                    elif (user_input == "2"):
+                        self.historia_operacji.operation_memory_menu()
+                    elif (user_input == "3"):
+                        break
+                    else:
+                        invalid_input("Podano niepoprawne dane")
+            elif (user_input == "2"):
+                operacja = Dodawanie.enter_m_m(self.historia_obiektow)
+                operacja.print_and_save(self)
+            elif (user_input == "3"):
+                operacja = Odejmowanie.enter_m_m(self.historia_obiektow)
+                operacja.print_and_save(self)
+            elif (user_input == "4"):
+                operacja = MnozeniePrzezSkalar.enter_num_m(self.historia_obiektow)
+                operacja.print_and_save(self)
+            elif (user_input == "5"):
+                operacja = Mnozenie.enter_m_m(self.historia_obiektow)
+                operacja.print_and_save(self)
+            elif (user_input == "6"):
+                operacja = EliminacjaGaussa.enter_m(self.historia_obiektow)
+                operacja.print_and_save(self)
+            elif (user_input == "7"):
+                operacja = Wyznacznik.enter_m(self.historia_obiektow)
+                operacja.print_and_save(self)
+            elif (user_input == "8"):
+                operacja = KryteriumSylwestera.enter_m(self.historia_obiektow)
+                operacja.print_and_save(self)
+            elif (user_input == "9"):
+                break
+            else:
+                invalid_input("Podano niepoprawne dane")
+
+
+            
+            
+
+import numpy as np
+
+from aux import clear_terminal
+from macierz import Macierz
+
+from operacja_unarna import OperacjaUnarna
+from operacja_binarna import OperacjaBinarna
+
+class Mnozenie(OperacjaBinarna):
+    nazwa_typu = "MNOŻENIE"
+    def __init__(self, nazwa, m1, m2):
+        OperacjaBinarna.__init__(self, nazwa, m1, m2)
+        if self.wymiary1[1] != self.wymiary2[0]:
+            raise ValueError("Wymiary macierzy nie są takie same")
+        self.m = self.wymiary1[0]
+        self.n = self.wymiary1[1]
+        self.k = self.wymiary2[1]
+
+    def enter_m_m(historia, nazwa = ""):
+        clear_terminal()
+        print("Podaj pierwszą macierz")
+        m1 = OperacjaUnarna.enter_matrix(historia)
+        clear_terminal()
+        print("Podaj drugą macierz")
+        m2 = OperacjaUnarna.enter_matrix(historia, m1.get_dimensions()[1])
+        return Mnozenie(nazwa, m1, m2)
+        
+    def run_operation(self):
+        res_matrix = Macierz(self.m, self.k)
+        for i in range(1, self.m+1):
+            for j in range(1, self.k+1):
+                color_list1 = [(i, l) for l in range(1, self.n+1)]
+                color_list2 = [(l, j) for l in range(1, self.n+1)]
+                res_str = "+".join([str(self.m1[i, l]) + "*" + str(self.m2[l, j]) for l in range(1, self.n+1)])
+                res_matrix[i, j] = res_str
+                self.lista_krokow.append(OperacjaBinarna.str_m_op_m_eq_m(self.m1, self.m2, res_matrix, "*", color_list1, color_list2, [(i, j)]))
+                res_matrix[i, j] = eval(res_str)
+                self.lista_krokow.append(OperacjaBinarna.str_m_op_m_eq_m(self.m1, self.m2, res_matrix, "*", color_list1, color_list2, [(i, j)]))
+
+        self.result = res_matrix
+        
+    import numpy as np
+from aux import clear_terminal
+from operacja_unarna import OperacjaUnarna
+from operacja_binarna import OperacjaBinarna
+from macierz import Macierz
+
+class MnozeniePrzezSkalar(OperacjaBinarna):
+    nazwa_typu = "DODAWANIE"
+    def __init__(self, nazwa, num, m1):
+        OperacjaUnarna.__init__(self, nazwa, m1)
+        self.m = self.wymiary1[0]
+        self.n = self.wymiary1[1]
+        self.num = num
+        
+    def enter_num_m(historia, nazwa = ""):
+        clear_terminal()
+        print("Podaj skalar")
+        num = OperacjaUnarna.enter_number(historia)
+        clear_terminal()
+        print("Podaj drugą macierz")
+        m1 = OperacjaUnarna.enter_matrix(historia)
+        return MnozeniePrzezSkalar(nazwa, num, m1)
+    
+    def run_operation(self):
+        my_list = [[] for _ in range(self.m)]
+        for i in range(self.m):
+            for j in range(self.n):
+                my_list[i].append(str(self.num.get_value()) + "*" + str(self.m1[i+1, j+1]))
+
+        t1 = np.array(my_list, dtype=np.str_)
+        step1 = Macierz(self.m, self.n, "", t1)
+        
+        self.lista_krokow.append(OperacjaBinarna.str_num_op_m_eq_m(self.num, self.m1, step1, "*"))
+        step1.eval()
+        self.lista_krokow.append(OperacjaBinarna.str_num_op_m_eq_m(self.num, self.m1, step1, "*"))
+        self.result = step1from aux import clear_terminal, invalid_input
+
+class ObiektMatematyczny:
+    zbior_nazw = set()
+    def __init__(self, nazwa):
+        self.nazwa = nazwa
+        
+    def type_repr(self):
+        return self.nazwa_typu
+
+    def set_name(self, nazwa):
+        self.nazwa = nazwa
+        
+    def __str__(self):
+        pass
+        
+    def __repr__(self):
+        return self.nazwa
+
+    def get_value(self):
+        pass
+    
+    def print_all():
+        for e in ObiektMatematyczny.zbior_nazw:
+            print(e)
+
+    def create_number_val():
+        clear_terminal()               
+        while(True):
+            print("Podaj wartość")
+            user_input = input()
+            try:
+                user_input = int(user_input)
+                return int(user_input)
+            except:
+                try:
+                    user_input = float(user_input)
+                    return float(user_input)
+                except:
+                    invalid_input("Podano nieprawidłową wartość")
+from colorama import Fore
+import numpy as np
+
+from aux import clear_terminal
+from macierz import Macierz
+
+from operacja_unarna import OperacjaUnarna
+from operacja_binarna import OperacjaBinarna
+
+class Odejmowanie(OperacjaBinarna):
+    nazwa_typu = "ODEJMOWANIE"
+    def __init__(self, nazwa, m1, m2):
+        OperacjaBinarna.__init__(self, nazwa, m1, m2)
+        if self.wymiary1 != self.wymiary2:
+            raise ValueError("Wymiary macierzy nie są takie same")
+        self.m = self.wymiary1[0]
+        self.n = self.wymiary1[1]
+     
+    def enter_m_m(historia, nazwa = ""):
+        clear_terminal()
+        print("Podaj pierwszą macierz")
+        m1 = OperacjaUnarna.enter_matrix(historia)
+        clear_terminal()
+        print("Podaj drugą macierz")
+        m2 = OperacjaUnarna.enter_matrix(historia, m1.get_dimensions()[0], m1.get_dimensions()[1])
+        return Odejmowanie(nazwa, m1, m2)
+        
+    def run_operation(self):
+        my_list = [[] for _ in range(self.m)]
+        for i in range(self.m):
+            for j in range(self.n):
+                my_list[i].append(str(self.m1[i+1, j+1]) + "-" + str(self.m2[i+1, j+1]))
+
+        t1 = np.array(my_list, dtype=np.str_)
+        step1 = Macierz(self.m, self.n, "", t1)
+        
+        self.lista_krokow.append(OperacjaBinarna.str_m_op_m_eq_m(self.m1, self.m2, step1, "-"))
+        step1.eval()
+        self.lista_krokow.append(OperacjaBinarna.str_m_op_m_eq_m(self.m1, self.m2, step1, "-"))
+        self.result = step1
+    from aux import clear_terminal, get_char
+
+import numpy as np
+
+class Operacja:
+    def __init__(self, nazwa):
+        self.nazwa = nazwa
+        self.lista_krokow = []
+        self.result = None
+    
+    def set_name(self, nazwa):
+        self.nazwa = nazwa
+
+    def print_and_save(self, menu):
+        self.print_operation_steps()
+        menu.historia_operacji.add_to_history(self)
+        menu.historia_obiektow.add_to_history(self)   
+        
+    
+    def type_repr(self):
+        return self.nazwa_typu
+    
+    def get_result(self):
+        if self.result != None:
+            return self.result
+        else:
+            self.run_operation()
+            return self.result
+    
+    def __repr__(self):
+        return self.nazwa
+    
+    def get_steps(self):
+        if self.lista_krokow == []:
+            self.run_operation()
+        return self.lista_krokow
+        
+    def print_operation_steps(self):
+        if self.lista_krokow == []:
+            self.run_operation()
+        i = 0
+        while True:
+            clear_terminal()
+            print(self.nazwa_typu, ": ")
+            print("Krok: ", i+1)
+            print(self.lista_krokow[i])
+            print("Używaj ad, aby poruszać się po krokach operacji")
+            print("Naciśnij q jeśli chcesz zakończyć przeglądanie kroków operacji")
+            user_input = get_char()
+            print(i)
+            if user_input == "a":
+                if i > 0:
+                    i -= 1
+            elif user_input == "d":
+                if i < len(self.lista_krokow) -1:
+                    i += 1
+            elif user_input == "q":
+                break
+            else:
+                print("Podano nieprawidłową wartość")
+                user_input = input()
+                
+    def print_all_operation_steps(self):
+        clear_terminal()
+        print(self.nazwa_operacji, ": ")
+        for i, e in enumerate(self.lista_krokow):
+            print("Krok: ", i+1)
+            print(e)import numpy as np
+from colorama import Fore, Style
+
+from operacja_unarna import OperacjaUnarna
+
+class OperacjaBinarna(OperacjaUnarna):
+    def __init__(self, nazwa, m1, m2):
+        OperacjaUnarna.__init__(self, nazwa, m1)
+        self.m2 = m2
+        self.wymiary2 = m2.get_dimensions()
+        
+    def str_m_op_m(self, other, operator="o", color_list1=[], color_list2=[], color=Fore.GREEN, color2=Fore.CYAN):
+        res = ""
+        arr = self.macierz
+        arr2 = other.macierz
+        max_width = np.vectorize(lambda x: len(str(x)))(arr).max()
+        max_width2 = np.vectorize(lambda x: len(str(x)))(arr2).max()
+        n_len = len(str(self.n))
+        m_len = len(str(self.m))
+        n2_len = len(str(other.n))
+        m2_len = len(str(other.m))
+        res += " " * (2 + n_len)
+        for j in range(arr.shape[1]):
+            res += " " * (max_width - len(str(j)))
+            res += f"{color2}{j+1}:{Style.RESET_ALL}"
+        res += " " * 3
+        res += " " * (2 + n2_len)
+        for j in range(arr2.shape[1]):
+            res += " " * (max_width2 - len(str(j)))
+            res += f"{color2}{j+1}:{Style.RESET_ALL}"
+        res += "\n"
+        
+        for i in range(arr.shape[0]):
+            res += f"{color2}{i+1}:{Style.RESET_ALL} "
+            res += " " * (m_len - (len(str(i+1))))
+            for j in range(arr.shape[1]):
+                if (i + 1, j + 1) in color_list1:
+                    res += f"{color}{str(arr[i, j]).rjust(max_width)}{Style.RESET_ALL} "
+                else:
+                    res += str(arr[i, j]).rjust(max_width) + " "
+            
+            res += f" {operator if i == int(self.m / 2) else ' '} "
+            
+            res += f"{color2}{i+1}:{Style.RESET_ALL} "
+            res += " " * (m2_len - (len(str(i+1))))
+            for j in range(arr2.shape[1]):
+                if (i + 1, j + 1) in color_list2:
+                    res += f"{color}{str(arr2[i, j]).rjust(max_width2)}{Style.RESET_ALL} "
+                else:
+                    res += str(arr2[i, j]).rjust(max_width2) + " "
+                    
+            res += "\n"
+        return res
+    
+    def str_m_op_m_eq_m(self, other, other2, operator="o", color_list1=[], color_list2=[], color_list3=[], color=Fore.GREEN, color2=Fore.CYAN):
+        res = ""
+        arr = self.macierz
+        arr2 = other.macierz
+        arr3 = other2.macierz
+        height = max([arr.shape[0], arr2.shape[0], arr3.shape[0]])
+        max_width = np.vectorize(lambda x: len(str(x)))(arr).max()
+        max_width2 = np.vectorize(lambda x: len(str(x)))(arr2).max()
+        max_width3 = np.vectorize(lambda x: len(str(x)))(arr3).max()
+        n_len = len(str(self.n))
+        m_len = len(str(self.m))
+        n2_len = len(str(other.n))
+        m2_len = len(str(other.m))
+        n3_len = len(str(other2.n))
+        m3_len = len(str(other2.m))
+        res += " " * (2 + n_len)
+        for j in range(arr.shape[1]):
+            res += " " * (max_width - len(str(j)))
+            res += f"{color2}{j+1}:{Style.RESET_ALL}"
+        res += " " * 3
+        res += " " * (2 + n2_len)
+        for j in range(arr2.shape[1]):
+            res += " " * (max_width2 - len(str(j)))
+            res += f"{color2}{j+1}:{Style.RESET_ALL}"
+        res += " " * 3
+        res += " " * (2 + n3_len)
+        for j in range(arr3.shape[1]):
+            res += " " * (max_width3 - len(str(j)))
+            res += f"{color2}{j+1}:{Style.RESET_ALL}"
+        res += "\n"
+        
+        for i in range(height):
+            if not arr.shape[0] < i + 1:
+                res += f"{color2}{i+1}:{Style.RESET_ALL} "
+                res += " " * (m_len - (len(str(i+1))))
+                for j in range(arr.shape[1]):
+                    if (i + 1, j + 1) in color_list1:
+                        res += f"{color}{str(arr[i, j]).rjust(max_width)}{Style.RESET_ALL} "
+                    else:
+                        res += str(arr[i, j]).rjust(max_width) + " "
+            else:
+                res += " " * (m_len + 1) + " " * ((max_width + 1) * arr.shape[1]) + " " 
+            
+            res += f" {operator if i == int(self.m / 2) else ' '} "
+            
+            if not arr2.shape[0] < i + 1:
+                res += f"{color2}{i+1}:{Style.RESET_ALL} "
+                res += " " * (m2_len - (len(str(i+1))))
+                for j in range(arr2.shape[1]):
+                    if (i + 1, j + 1) in color_list2:
+                        res += f"{color}{str(arr2[i, j]).rjust(max_width2)}{Style.RESET_ALL} "
+                    else:
+                        res += str(arr2[i, j]).rjust(max_width2) + " "
+
+            else:
+                res += " " * m2_len + " " * max_width2 + " " 
+ 
+            res += f" {'=' if i == int(self.m / 2) else ' '} "
+            
+            if not arr.shape[0] < i + 1:
+                res += f"{color2}{i+1}:{Style.RESET_ALL} "
+                res += " " * (m3_len - (len(str(i+1))))
+                for j in range(arr3.shape[1]):
+                    if (i + 1, j + 1) in color_list3:
+                        res += f"{color}{str(arr3[i, j]).rjust(max_width3)}{Style.RESET_ALL} "
+                    else:
+                        res += str(arr3[i, j]).rjust(max_width3) + " "
+            else:
+                res += " " * m3_len + " " * max_width3 + " " 
+            
+                    
+            res += "\n"
+        return res
+    
+       
+    def str_num_op_m_eq_m(self, other, other2, operator="o", color_list1=[], color_list2=[], color_list3=[], color=Fore.GREEN, color2=Fore.CYAN):
+        res = ""
+        num = self.get_value()
+        arr = other.macierz
+        arr2 = other2.macierz
+        height = max([arr.shape[0], arr2.shape[0]])
+        num_width = len(str(num))
+        max_width = np.vectorize(lambda x: len(str(x)))(arr).max()
+        max_width2 = np.vectorize(lambda x: len(str(x)))(arr2).max()
+        n_len = len(str(other.n))
+        m_len = len(str(other.m))
+        n2_len = len(str(other2.n))
+        m2_len = len(str(other2.m))
+        
+        res += " "*(num_width+2)
+        res += " " * 3
+        res += " " * (2 + n_len)
+        for j in range(arr.shape[1]):
+            res += " " * (max_width - len(str(j)))
+            res += f"{color2}{j+1}:{Style.RESET_ALL}"
+        res += " " * 3
+        res += " " * (2 + n2_len)
+        for j in range(arr2.shape[1]):
+            res += " " * (max_width2 - len(str(j)))
+            res += f"{color2}{j+1}:{Style.RESET_ALL}"
+        res += "\n"
+        
+        for i in range(height):
+            
+            res += f" {str(num) if i == int(other.m / 2) else ' '*num_width} "
+            
+            res += f" {operator if i == int(other.m / 2) else ' '} "
+            
+            if not arr.shape[0] < i + 1:
+                res += f"{color2}{i+1}:{Style.RESET_ALL} "
+                res += " " * (m_len - (len(str(i+1))))
+                for j in range(arr.shape[1]):
+                    if (i + 1, j + 1) in color_list2:
+                        res += f"{color}{str(arr[i, j]).rjust(max_width)}{Style.RESET_ALL} "
+                    else:
+                        res += str(arr[i, j]).rjust(max_width) + " "
+
+            else:
+                res += " " * m_len + " " * max_width + " " 
+ 
+            res += f" {'=' if i == int(other.m / 2) else ' '} "
+            
+            if not arr2.shape[0] < i + 1:
+                res += f"{color2}{i+1}:{Style.RESET_ALL} "
+                res += " " * (m2_len - (len(str(i+1))))
+                for j in range(arr2.shape[1]):
+                    if (i + 1, j + 1) in color_list3:
+                        res += f"{color}{str(arr2[i, j]).rjust(max_width2)}{Style.RESET_ALL} "
+                    else:
+                        res += str(arr2[i, j]).rjust(max_width2) + " "
+            else:
+                res += " " * m2_len + " " * max_width2 + " " 
+            
+                    
+            res += "\n"
+        return res
+from aux import invalid_input, clear_terminal
+from operacja import Operacja
+from macierz import Macierz
+from historia import Historia
+from obiekt_matematyczny import ObiektMatematyczny
+from liczba import Liczba
+from stala import Stala
+from zmienna import Zmienna
+
+class OperacjaUnarna(Operacja):
+    def __init__(self, nazwa, m1):
+        Operacja.__init__(self, nazwa)
+        self.m1 = m1
+        self.wymiary1 = m1.get_dimensions()
+        
+    def display_enter_matrix_menu():
+        print("------------WYBIERZ-MACIERZ---------------") 
+        print("1. Utwórz nową macierz")
+        print("2. Wybierz macierz z pamięci")       
+        print("Podaj liczbę:   ", end="")
+ 
+    def display_enter_number_menu():
+        print("------------WYBIERZ-SKALAR---------------") 
+        print("1. Utwórz nową liczbę")
+        print("2. Wybierz liczbę z pamięci")       
+        print("Podaj liczbę:   ", end="")          
+
+           
+    def enter_matrix(historia, m = 0, n = 0, equal=False):
+        while True:
+            OperacjaUnarna.display_enter_matrix_menu()
+            user_input = input()
+            if (user_input == "1"):
+                if equal:
+                    return Macierz.create_matrix("", m, n, equal)
+                else:
+                    return Macierz.create_matrix("", m, n)
+            elif (user_input == "2"):
+                obiekt = historia.return_from_history()
+                if isinstance(obiekt, Macierz): 
+                    if obiekt.eq_dimensions(m, n):
+                        return obiekt
+                    else:
+                        invalid_input("Wybrana macierz ma nieodpowiednie wymiary")
+                else:
+                    invalid_input("Wybrano obiekt innego typu niż macierz")
+            else:
+                invalid_input("Podano niepoprawne dane")
+                
+    def enter_number(historia):
+        while True:
+            OperacjaUnarna.display_enter_number_menu()
+            user_input = input()
+            if (user_input == "1"):
+                return Liczba(ObiektMatematyczny.create_number_val())
+            elif (user_input == "2"):
+                obiekt = historia.return_from_history()
+                if isinstance(obiekt, Liczba) or isinstance(obiekt, Stala) or isinstance(obiekt, Zmienna):
+                    return obiekt
+                else:
+                    invalid_input("Wybrano obiekt innego typu niż liczba, stała lub zmienna")
+            else:
+                invalid_input("Podano niepoprawne dane")
+            from aux import invalid_input
+
+from obiekt_matematyczny import ObiektMatematyczny
+from liczba import Liczba
+
+class Stala(Liczba):
+    nazwa_typu = "STAŁA"
+    
+    
+    def __init__(self, wartosc, nazwa):
+        self.nazwa = nazwa
+        self.wartosc = wartosc
+        
+    def get_value(self):
+        return self.wartosc
+    
+    def __str__(self):
+        return str(self.get_value())
+    
+    def modify(self):
+        invalid_input("Nie można modyfikować obiektu Stała")
+
+import numpy as np
+
+from aux import clear_terminal
+from obiekt_matematyczny import ObiektMatematyczny
+from macierz import Macierz
+
+class Wektor(Macierz):
+    nazwa_typu = "WEKTOR"
+    
+    def __init__(self, m, nazwa="", tab=[]):
+        super().__init__(m, 1, nazwa, tab)
+        
+    def create_wektor(nazwa):
+        clear_terminal()
+        m = Macierz.enter_matrix_size("Podaj liczbę wierszy")
+        n = 1
+        macierz = Wektor(m, nazwa)
+        return Macierz.edit_matrix(macierz, m, n, is_wektor= True)
+
+    def modify(self, is_wektor=True):
+        Macierz.modify(self, is_wektor)      
+
+        
+import copy
+from aux import clear_terminal
+
+from liczba import Liczba
+from operacja_unarna import OperacjaUnarna
+from eliminacja_gaussa import EliminacjaGaussa
+from mnozenie_przez_skalar import MnozeniePrzezSkalar
+
+class Wyznacznik(EliminacjaGaussa):
+    nazwa_typu = "WYZNACZNIK"
+    def __init__(self, nazwa, m1):
+        OperacjaUnarna.__init__(self, nazwa, m1)
+        if self.wymiary1[0] != self.wymiary1[1]:
+            raise ValueError("Macierz nie jest kwadratowa")
+        self.m = self.wymiary1[0]
+        self.n = self.wymiary1[1]
+        self.result_matrix = None
+        self.steps_without_det = None
+    
+    def get_result_matrix(self):
+        while self.result_matrix == None:
+            self.run_operation()
+        return self.result_matrix
+            
+    def get_steps_without_det(self):
+        if self.steps_without_det == None:
+            self.run_operation()
+        return self.steps_without_det
+    
+    def enter_m(historia, nazwa = ""):
+        clear_terminal()
+        print("Podaj macierz")
+        m1 = OperacjaUnarna.enter_matrix(historia, 0, 0, True)
+        return Wyznacznik(nazwa, m1)
+    
+    def run_operation(self):
+        EliminacjaGaussa.run_operation(self)
+        if self.licznik_zamiany_kolumn % 2 == 1:
+            res = MnozeniePrzezSkalar("", Liczba(-1), self.get_result())
+            self.lista_krokow += res.get_steps()
+        else:
+            res = MnozeniePrzezSkalar("", Liczba(1), self.get_result())
+        res_matrix = res.get_result()
+        color_list1 = [(l, l) for l in range(1, self.n+1)]
+        self.steps_without_det = copy.copy(self.lista_krokow)
+        self.lista_krokow.append(res_matrix.to_str(color_list1))
+        res_str = ""
+        for i in range(1, self.n+1):
+            res_str += str(res_matrix[i, i])
+            if i != self.n:
+                res_str += "*"
+        self.lista_krokow.append(res_str)
+        res_num = eval(res_str)
+        self.lista_krokow.append(res_num)
+        self.result = Liczba(res_num)
+        self.result_matrix = res_matrixfrom aux import *
+from collections import defaultdict as dd
+from colorama import Fore, Style
+
+from historia import Historia
+from obiekt_matematyczny import ObiektMatematyczny
+from macierz import Macierz
+from wektor import Wektor
+from liczba import Liczba
+from stala import Stala
+from zmienna import Zmienna
+
+class Zbior(ObiektMatematyczny, Historia):
+    nazwa_typu = "ZBIÓR"
+    MAX_NUMBER_OF_SHOWED_ELEMS = 10
+    MAX_SET_LEN = 20
+    
+    def __init__(self, nazwa, slownik_nazwa_wartosc = dd()):
+        self.nazwa = nazwa
+        Historia.__init__(self, slownik_nazwa_wartosc)
+        
+    def __setitem__(self, nazwa, obiekt):
+        if len(self.lista_indeks_nazwa) >= Zbior.MAX_SET_LEN:
+            raise ValueError("Osiągnięto maksymalną liczbę obiektów matematycznych w danym zbiorze")
+        else:
+            Historia.__setitem__(self, nazwa, obiekt, zbior = True)
+      
+
+    def modify(self):
+        self.set_menu()
+    
+    def show_object(self, i, wait=True, mode="show_object"):
+        object = self.slownik_nazwa_wartosc[self.lista_indeks_nazwa[i-1]]
+        if not isinstance(object, Liczba) or isinstance(object, Stala) or isinstance(object, Zmienna):
+            print(repr(object))
+        print(object)
+        if wait:
+            user_input = input()
+        
+    def print_range(self, b, e, chosen=0, naglowek = "ZBIÓR", color=Fore.GREEN):
+        Historia.print_range(self, b, e, chosen, naglowek, color)
+
+    def browse_set(self, mode="show_object"):
+        return self.browse_history(mode)
+    
+    def display_set_menu():
+        clear_terminal()
+        print("------------MENU-ZBIORU---------------")
+        print("1. Nowa macierz")
+        print("2. Nowy wektor")
+        print("3. Nowa liczba")
+        print("4. Nowa stała")
+        print("5. Nowa zmienna")
+        print("6. Usuń wybrany obiekt")
+        print("7. Przeglądaj zapisane obiekty matematyczne")
+        print("8. Edytuj wybrany obiekt")
+        print("9. Menu historii obiektów")
+        print("Podaj liczbę:   ", end="")
+        
+    def create_set(nazwa):
+        zbior = Zbior(nazwa)
+        zbior.set_menu()
+        return zbior
+
+    def set_menu(self):
+        while True:
+            Zbior.display_set_menu()
+            user_input = input()
+            if (user_input == "1"):
+                self.new_matrix()
+            elif (user_input == "2"):
+                self.new_vector()
+            elif (user_input == "3"):
+                self.new_number()
+            elif (user_input == "4"):
+                self.new_constant()
+            elif (user_input == "5"):
+                self.new_variable()
+            elif (user_input == "6"):
+                self.browse_history("remove_object")
+            elif (user_input == "7"):
+                self.browse_history("show_object")
+            elif (user_input == "8"):
+                object_to_mod = self.browse_history("return_object")
+                if object_to_mod != None:
+                    object_to_mod.modify()
+            elif (user_input == "9"):
+                break
+            else:
+                invalid_input("Podano niepoprawne dane")
+    
+    def new_matrix(self):
+        nazwa = self.create_name()
+        nowy_obiekt = Macierz.create_matrix(nazwa)
+        self[repr(nowy_obiekt)] = nowy_obiekt
+
+    def new_vector(self):
+        nazwa = self.create_name()
+        nowy_obiekt = Wektor.create_wektor(nazwa)
+        self[repr(nowy_obiekt)] = nowy_obiekt
+        
+    def new_number(self):
+        while True:
+            wartosc = ObiektMatematyczny.create_number_val()
+            nazwa = str(wartosc)
+            if nazwa in self.lista_indeks_nazwa:
+                invalid_input("Podana liczba jest już zapisana")
+                continue
+            break
+        nowy_obiekt = Liczba(wartosc)
+        self[repr(nowy_obiekt)] = nowy_obiekt
+        
+    def new_constant(self):
+        nazwa = self.create_name()
+        wartosc = Liczba.create_number_val()
+        self[nazwa] = Stala(wartosc, nazwa)
+        
+    def new_variable(self):
+        nazwa = self.create_name()
+        wartosc = Liczba.create_number_val()
+        self[nazwa] = Zmienna(wartosc, nazwa)
+        
+    def new_set(self):
+        nazwa = self.create_name()
+        nowy_obiekt = Zbior.create_set(nazwa)
+        self[nazwa] = nowy_obiekt
+from obiekt_matematyczny import ObiektMatematyczny
+from liczba import Liczba
+
+class Zmienna(Liczba):
+    nazwa_typu = "ZMIENNA"
+    
+    def __init__(self, wartosc, nazwa):
+        self.nazwa = nazwa
+        self.wartosc = wartosc
+      
+    def get_value(self):
+        return self.wartosc
+    
+    def set_value(self, wartosc):
+        self.wartosc = wartosc
+        
+    def __str__(self):
+        return str(self.get_value())
+    
+    def modify(self):
+        self.set_value(ObiektMatematyczny.create_number_val())
+    
