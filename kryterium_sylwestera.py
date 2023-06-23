@@ -1,4 +1,4 @@
-from aux import clear_terminal
+from aux import clear_terminal, round_to_n_significant_digits
 
 from operacja_unarna import OperacjaUnarna
 from liczba import Liczba
@@ -36,6 +36,11 @@ class KryteriumSylwestera(Wyznacznik):
                         res_str += "*"
                 self.lista_krokow.append(res_str)
                 res_num = eval(res_str)
+                if res_num < 10 ** self.EPSILON_POWER:
+                    r_num_round = round_to_n_significant_digits(res_num, self.EPSILON_POWER)
+                    diff = res_num - r_num_round
+                    if diff < self.EPSILON and diff > -self.EPSILON:
+                        res_num = r_num_round
                 self.lista_krokow.append(res_num)
                 det_list.append(res_num)
 

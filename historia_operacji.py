@@ -52,5 +52,8 @@ class HistoriaOperacji(Historia):
             else:
                 invalid_input("Podano niepoprawne dane")
      
-    def show_object(self, chosen):
-        self[chosen].print_operation_steps()
+    def show_object(self, chosen, wait=True, mode="show_object"):
+        if isinstance(self[chosen], HistoriaOperacji):
+            self[chosen].browse_history(mode)
+        else:
+            self[chosen].print_operation_steps()

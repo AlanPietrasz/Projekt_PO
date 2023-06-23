@@ -3,7 +3,7 @@ from aux import clear_terminal, round_to_n_significant_digits
 from operacja_unarna import OperacjaUnarna
 
 class EliminacjaGaussa(OperacjaUnarna):
-    EPSILON_POWER = 8
+    EPSILON_POWER = 9
     EPSILON = 10 ** -EPSILON_POWER
     nazwa_typu = "ELIMINACJA G."
     def __init__(self, nazwa, m1):
@@ -41,7 +41,7 @@ class EliminacjaGaussa(OperacjaUnarna):
                         res_matrix[wiersz, j] = r_str
                         self.lista_krokow.append(res_matrix.to_str_2_col(color_list1, color_list2))
                         r_num = eval(r_str)
-                        if r_num < 1000:
+                        if r_num < 10 ** self.EPSILON_POWER:
                             r_num_round = round_to_n_significant_digits(r_num, self.EPSILON_POWER)
                             diff = r_num - r_num_round
                             if diff < self.EPSILON and diff > -self.EPSILON:

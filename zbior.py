@@ -32,7 +32,9 @@ class Zbior(ObiektMatematyczny, Historia):
     def show_object(self, i, wait=True, mode="show_object"):
         object = self.slownik_nazwa_wartosc[self.lista_indeks_nazwa[i-1]]
         if not isinstance(object, Liczba) or isinstance(object, Stala) or isinstance(object, Zmienna):
+            print("Nazwa obiektu:")
             print(repr(object))
+        print("Wartość")
         print(object)
         if wait:
             user_input = input()

@@ -39,6 +39,27 @@ class HistoriaObiektow(Historia):
                 break
             else:
                 invalid_input("Podano niepoprawne dane") 
+
+    def display_remove_set_or_el_of_set_menu():
+        clear_terminal()
+        print("Co chcesz usunąć?")
+        print("1. Zbiór")
+        print("2. Element zbioru")
+        print("Podaj liczbę:   ", end="")
+        
+    def remove_set_or_el_of_set(self, zbior):
+        while (True):
+            HistoriaObiektow.display_remove_set_or_el_of_set_menu()
+            user_input = input()
+            if (user_input == "1"):
+                return False
+            elif (user_input == "2"):
+                zbior.browse_history("remove_object")
+                return True
+            else:
+                invalid_input("Podano niepoprawne dane")
+                 
+
         
     def show_object(self, i, wait=True, mode="show_object"):
         object = self.slownik_nazwa_wartosc[self.lista_indeks_nazwa[i-1]]
@@ -49,6 +70,10 @@ class HistoriaObiektow(Historia):
             if wait:
                 user_input = input()
         else:
+            if mode == 'remove_object':
+                usunieto_ze_zbioru = self.remove_set_or_el_of_set(object)
+                print("TUTAJ")
+                return usunieto_ze_zbioru
             if mode != "return_object":
                 object.browse_set()
         

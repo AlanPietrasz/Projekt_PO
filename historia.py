@@ -84,7 +84,7 @@ class Historia:
             user_input = get_char()
             if user_input == "enter":
                 if mode == "show_object":
-                    self.show_object(chosen)
+                    self.show_object(chosen, mode)
                 elif mode == "return_object":
                     res = self.return_menu(chosen)
                     if res != None:
@@ -141,16 +141,23 @@ class Historia:
     
     def delete_menu(self, chosen):
         while True:
-            self.show_object(chosen)
-            Historia.delete_object_memory_menu()
-            user_input = input()
-            if (user_input == "1"):
-                self.remove(self.lista_indeks_nazwa[chosen-1])
-                break
-            elif (user_input == "2"):
-                break
+            usunieto_ze_zbioru = self.show_object(chosen, True, "remove_object")
+            if usunieto_ze_zbioru == None or usunieto_ze_zbioru == False:
+                if usunieto_ze_zbioru == None:
+                    Historia.delete_object_memory_menu()
+                    user_input = input()
+                    if (user_input == "1"):
+                        self.remove(self.lista_indeks_nazwa[chosen-1])
+                        break
+                    elif (user_input == "2"):
+                        break
+                    else:
+                        invalid_input("Podano niepoprawne dane")
+                else:
+                    self.remove(self.lista_indeks_nazwa[chosen-1])
+                    break
             else:
-                invalid_input("Podano niepoprawne dane")   
+                break
                 
     def return_from_history(self):
         return self.browse_history(mode="return_object")

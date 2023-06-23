@@ -53,6 +53,11 @@ class Menu:
         self.historia_obiektow["macierz9"] = Macierz(3, 3, "macierz9", [[6, 2, 4],
                                                                         [2, 1, 1],
                                                                         [4, 1, 5]])
+        self.historia_obiektow["macierz10"] = Macierz(5, 7, "macierz10", [[1, 4, 3, 7, 3, 6, 4],
+                                                                          [5, 2, 8, 2, 7, 3, 1],
+                                                                          [3, 7, 0, 1, 5, 9, 1],
+                                                                          [1, 5, 3, 9, 2, 9, 0],
+                                                                          [1, 5, 2, 3, 8, 7, 2]])
         self.historia_obiektow["wektor1"] = Wektor(3, "wektor1", [[1, 2, 3]])
         self.historia_obiektow["pi"] = Stala(3.14,"pi")
         self.historia_obiektow["2.5"] = Liczba(2.5)
