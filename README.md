@@ -5,8 +5,10 @@ Program ten służy do nauki podstawowych operacji na macierzach. Użytkownik ma
 Projekt działa tylko na systemie Linux.
 Aby uruchomić projekt należy w folderze projeku wspisać w terminalu następujące komendy:
 ```
+sudo apt install python3-pip
 pip install colorama
 pip install numpy
+pip install pandas
 python3 main.py
 ```
 
@@ -19,7 +21,9 @@ Dostępne operacje:
 * wyznacznik
 * kryterium Sylwestera
 
-W historii operacji znajdują się już przykładowe operacje, których kroki można obejrzeć. W historii obiektów również znajdują się przykładowe obiekty matematyczne do dyspozycji użytkownika.
+W historii operacji znajdują się już przykładowe operacje, których kroki można obejrzeć (Zarządzanie Pamięcią -> Zapisane Operacje -> Przeglądaj zapisane operacje). W historii obiektów również znajdują się przykładowe obiekty matematyczne do dyspozycji użytkownika. 
+
+
 
 Link do repozytorium na githubie:
 

@@ -6,7 +6,6 @@ from colorama import Fore, Style
 from aux import *
 from obiekt_matematyczny import ObiektMatematyczny 
 
-
 class Macierz(ObiektMatematyczny):
     MAX_MATRIX_SIZE = 20
     nazwa_typu = "MACIERZ"
@@ -15,7 +14,7 @@ class Macierz(ObiektMatematyczny):
         self.m = m
         self.n = n
 
-        if tab == []:
+        if (isinstance(tab, list) and tab == []) or (isinstance(tab, np.ndarray) and tab.size == 0):
             tab = np.zeros((m, n), dtype=object)
         self.macierz = np.reshape(tab, (m, n))
         if nazwa == "":
